@@ -1,0 +1,585 @@
+const fs = require('fs');
+const path = require('path');
+const readline = require('readline');
+
+const dataDir = path.join(__dirname, '../real_dataset/Data Pack');
+
+async function main() {
+  console.log('=== CIRA ANALYTICS: PROCESSING WITH PAKISTAN PLAYERS EXCLUDED FOR IPL AUCTION ===\n');
+
+  // 1. Read teams.csv
+  const teamIdNameMap = new Map();
+  const teamsContent = fs.readFileSync(path.join(dataDir, 'teams.csv'), 'utf8');
+  const teamLines = teamsContent.split('\n');
+  const pakTeamIds = new Set(['25', '341']);
+
+  for (let i = 1; i < teamLines.length; i++) {
+    const line = teamLines[i].trim();
+    if (!line) continue;
+    const parts = line.split(',');
+    if (parts.length >= 3) {
+      const teamId = parts[1].trim();
+      const teamName = parts.slice(2).join(',').trim();
+      teamIdNameMap.set(teamId, teamName);
+      if (teamName.toLowerCase().includes('pakistan')) {
+        pakTeamIds.add(teamId);
+      }
+    }
+  }
+
+  // 2. Read competitions.csv
+  const compSeasonMap = new Map();
+  const compContent = fs.readFileSync(path.join(dataDir, 'competitions.csv'), 'utf8');
+  const compLines = compContent.split('\n');
+  for (let i = 1; i < compLines.length; i++) {
+    const line = compLines[i].trim();
+    if (!line) continue;
+    const parts = line.split(',');
+    if (parts.length >= 4) {
+      const compId = parts[0].trim();
+      const season = parseInt(parts[3].trim(), 10) || 2022;
+      compSeasonMap.set(compId, season);
+    }
+  }
+
+  // 3. Read matches.csv
+  const matchMap = new Map();
+  const matchesContent = fs.readFileSync(path.join(dataDir, 'matches.csv'), 'utf8');
+  const matchLines = matchesContent.split('\n');
+  const matchHeader = matchLines[0].split(',').map((h) => h.trim());
+  const mIdIdx = matchHeader.indexOf('match_id');
+  const cIdIdx = matchHeader.indexOf('comp_id');
+  const dateIdx = matchHeader.indexOf('match_date');
+  const hTeamIdx = matchHeader.indexOf('home_team');
+  const aTeamIdx = matchHeader.indexOf('away_team');
+  const hIdIdx = matchHeader.indexOf('home_team_id');
+  const aIdIdx = matchHeader.indexOf('away_team_id');
+  const targetIdx = matchHeader.indexOf('revised_target');
+
+  for (let i = 1; i < matchLines.length; i++) {
+    const line = matchLines[i].trim();
+    if (!line) continue;
+    const cols = line.split(',');
+    const matchId = cols[mIdIdx]?.trim();
+    if (!matchId) continue;
+    const compId = cols[cIdIdx]?.trim();
+    const dateStr = cols[dateIdx]?.trim();
+    let year = compSeasonMap.get(compId);
+    if (!year && dateStr) {
+      const m = dateStr.match(/\d{4}/);
+      if (m) year = parseInt(m[0], 10);
+    }
+    if (!year) year = 2022;
+
+    const revisedTarget = cols[targetIdx] ? parseFloat(cols[targetIdx]) : 0;
+
+    matchMap.set(matchId, {
+      matchId,
+      compId,
+      year,
+      date: dateStr,
+      homeTeam: cols[hTeamIdx]?.trim() || teamIdNameMap.get(cols[hIdIdx]?.trim()) || 'Home Team',
+      awayTeam: cols[aTeamIdx]?.trim() || teamIdNameMap.get(cols[aIdIdx]?.trim()) || 'Away Team',
+      homeTeamId: cols[hIdIdx]?.trim(),
+      awayTeamId: cols[aIdIdx]?.trim(),
+      revisedTarget,
+    });
+  }
+
+  // 4. Identify all Pakistani Player IDs from competition mappings and playing XI
+  const pakPlayerIds = new Set();
+  const pakPlayerNames = new Set();
+  const playerTeamMap = new Map();
+
+  const mapContent = fs.readFileSync(path.join(dataDir, 'competition_team_player_mapping.csv'), 'utf8');
+  const mapLines = mapContent.split('\n');
+  for (let i = 1; i < mapLines.length; i++) {
+    const line = mapLines[i].trim();
+    if (!line) continue;
+    const parts = line.split(',');
+    if (parts.length >= 6) {
+      const teamId = parts[2].trim();
+      const teamName = parts[3].trim();
+      const pId = parts[4].trim();
+      const pName = parts[5].trim();
+      if (pakTeamIds.has(teamId) || teamName.toLowerCase().includes('pakistan')) {
+        pakPlayerIds.add(pId);
+        pakPlayerNames.add(pName.toLowerCase());
+      } else {
+        playerTeamMap.set(pName, teamName);
+      }
+    }
+  }
+
+  // 5. Pass 1 over ball_by_ball.csv:
+  // - Find any additional player IDs appearing for Pakistani teams
+  // - Accumulate season runs for anchors
+  const firstInningsTotals = new Map();
+  const teamSeasonBatterRuns = new Map();
+
+  const rl1 = readline.createInterface({
+    input: fs.createReadStream(path.join(dataDir, 'ball_by_ball.csv')),
+    crlfDelay: Infinity,
+  });
+
+  let lineCount = 0;
+  for await (const line of rl1) {
+    lineCount++;
+    if (lineCount === 1) continue;
+    if (!line) continue;
+
+    const cols = line.split(',');
+    const matchId = cols[0]?.trim();
+    const match = matchMap.get(matchId);
+    if (!match || match.year < 2022) continue;
+
+    const innings = parseInt(cols[1]?.trim(), 10) || 1;
+    const batTeamId = cols[5]?.trim();
+    const bowlTeamId = cols[6]?.trim();
+    const strikerId = cols[7]?.trim();
+    const striker = cols[8]?.trim();
+    const bowlerId = cols[11]?.trim();
+    const bowler = cols[12]?.trim();
+
+    if (pakTeamIds.has(batTeamId)) {
+      if (strikerId) pakPlayerIds.add(strikerId);
+      if (striker) pakPlayerNames.add(striker.toLowerCase());
+    }
+    if (pakTeamIds.has(bowlTeamId)) {
+      if (bowlerId) pakPlayerIds.add(bowlerId);
+      if (bowler) pakPlayerNames.add(bowler.toLowerCase());
+    }
+
+    const runs = parseFloat(cols[16]?.trim()) || 0;
+    const extras1 = parseFloat(cols[24]?.trim()) || 0;
+    const extras2 = parseFloat(cols[25]?.trim()) || 0;
+    const totalRuns = runs + extras1 + extras2;
+
+    if (innings === 1) {
+      firstInningsTotals.set(matchId, (firstInningsTotals.get(matchId) || 0) + totalRuns);
+    }
+
+    if (batTeamId && striker) {
+      const key = `${batTeamId}_${match.year}`;
+      if (!teamSeasonBatterRuns.has(key)) {
+        teamSeasonBatterRuns.set(key, new Map());
+      }
+      const bMap = teamSeasonBatterRuns.get(key);
+      bMap.set(striker, (bMap.get(striker) || 0) + runs);
+
+      const teamName = teamIdNameMap.get(batTeamId) || (match.homeTeamId === batTeamId ? match.homeTeam : match.awayTeam);
+      if (teamName && !playerTeamMap.has(striker)) {
+        playerTeamMap.set(striker, teamName);
+      }
+    }
+  }
+
+  console.log(`Identified ${pakPlayerIds.size} Pakistan player IDs to EXCLUDE for IPL auction eligibility.`);
+
+  // Anchors
+  const teamSeasonAnchors = new Map();
+  for (const [key, bMap] of teamSeasonBatterRuns.entries()) {
+    let topBatter = '';
+    let maxRuns = -1;
+    for (const [batter, runs] of bMap.entries()) {
+      if (runs > maxRuns) {
+        maxRuns = runs;
+        topBatter = batter;
+      }
+    }
+    if (topBatter) {
+      teamSeasonAnchors.set(key, topBatter);
+    }
+  }
+
+  // 6. Pass 2 over ball_by_ball.csv: CIRA Engine
+  const batterStatsMap = new Map();
+  const bowlerStatsMap = new Map();
+
+  let totalDeliveries = 0;
+  let totalHighPressure = 0;
+  let totalCollapses = 0;
+  let totalLostCause = 0;
+
+  function processMatchInnings(balls) {
+    if (balls.length === 0) return;
+    const matchId = balls[0].matchId;
+    const innings = balls[0].innings;
+    const match = matchMap.get(matchId);
+    if (!match || match.year < 2022) return;
+
+    const batTeamId = balls[0].batTeamId;
+    const anchorPlayer = teamSeasonAnchors.get(`${batTeamId}_${match.year}`) || '';
+
+    const isChase = innings >= 2;
+    let targetRuns = match.revisedTarget || 0;
+    if (isChase && targetRuns <= 0) {
+      targetRuns = (firstInningsTotals.get(matchId) || 160) + 1;
+    }
+
+    let currentRuns = 0;
+    let wicketsLost = 0;
+    let legalBalls = 0;
+    let anchorDismissedIdx = -1;
+    let collapseBallsLeft = 0;
+
+    for (let i = 0; i < balls.length; i++) {
+      const b = balls[i];
+      totalDeliveries++;
+
+      const isWide = b.extrasType === 'wides';
+      const isNoBall = b.extrasType === 'no ball';
+      const isLegal = !isWide && !isNoBall;
+      if (isLegal) legalBalls++;
+
+      currentRuns += b.totalRuns;
+
+      const isWicket = b.isWicket && b.dismissalType !== 'run out';
+      if (b.isWicket) {
+        wicketsLost++;
+        if (anchorPlayer && b.striker.toLowerCase() === anchorPlayer.toLowerCase()) {
+          anchorDismissedIdx = i;
+          collapseBallsLeft = 15;
+          totalCollapses++;
+        }
+      }
+
+      let isCollapseActive = false;
+      if (collapseBallsLeft > 0 && i > anchorDismissedIdx) {
+        isCollapseActive = true;
+        collapseBallsLeft--;
+      }
+
+      const over1Indexed = b.overId;
+      const isDeathOvers = over1Indexed >= 16;
+      const ballsRemaining = Math.max(1, 120 - legalBalls);
+      const runsNeeded = isChase ? Math.max(0, targetRuns - currentRuns) : 0;
+      const rrr = isChase ? (runsNeeded / ballsRemaining) * 6 : 0;
+
+      const isLostCause = isChase && (rrr >= 18.0 || (runsNeeded >= 48 && ballsRemaining <= 18) || (wicketsLost >= 8 && rrr >= 12.0));
+      if (isLostCause) totalLostCause++;
+
+      let pi = 1.0;
+      if (isDeathOvers) pi += 0.50;
+      if (isChase) {
+        if (rrr > 8.0) {
+          pi += Math.min(1.5, (rrr - 8.0) * 0.15);
+        }
+        if (rrr >= 12.0) pi += 0.35;
+      } else {
+        if (over1Indexed <= 6 && wicketsLost >= 3) pi += 0.50;
+      }
+      if (wicketsLost >= 6) pi += 0.40;
+
+      let effectivePI = pi;
+      if (isCollapseActive) {
+        effectivePI = pi * 1.5;
+      }
+
+      const isHighPressure = effectivePI >= 1.45 || (isChase && rrr > 8.0) || isDeathOvers || wicketsLost >= 6 || isCollapseActive;
+      if (isHighPressure) totalHighPressure++;
+
+      // Batter aggregation (EXCLUDE Pakistani players!)
+      const isPakBatter = pakPlayerIds.has(b.strikerId) || pakPlayerNames.has(b.striker.toLowerCase());
+      if (!isWide && !isPakBatter) {
+        if (!batterStatsMap.has(b.striker)) {
+          batterStatsMap.set(b.striker, {
+            id: b.strikerId,
+            name: b.striker,
+            team: playerTeamMap.get(b.striker) || 'T20 Team',
+            totalBalls: 0,
+            totalRuns: 0,
+            pressureBalls: 0,
+            pressureRuns: 0,
+            pressureDots: 0,
+            pressureFours: 0,
+            pressureSixes: 0,
+            collapseBalls: 0,
+            collapseRuns: 0,
+            lostCauseBalls: 0,
+            lostCauseRuns: 0,
+            lostCauseBoundaries: 0,
+            lostCauseDots: 0,
+          });
+        }
+        const bStat = batterStatsMap.get(b.striker);
+        bStat.totalBalls++;
+        bStat.totalRuns += b.runs;
+
+        if (isHighPressure) {
+          bStat.pressureBalls++;
+          bStat.pressureRuns += b.runs;
+          if (b.runs === 0) bStat.pressureDots++;
+          if (b.isFour) bStat.pressureFours++;
+          if (b.isSix) bStat.pressureSixes++;
+        }
+
+        if (isCollapseActive) {
+          bStat.collapseBalls++;
+          bStat.collapseRuns += b.runs;
+        }
+
+        if (isLostCause) {
+          bStat.lostCauseBalls++;
+          bStat.lostCauseRuns += b.runs;
+          if (b.isFour || b.isSix) bStat.lostCauseBoundaries++;
+          if (b.runs === 0) bStat.lostCauseDots++;
+        }
+      }
+
+      // Bowler aggregation (EXCLUDE Pakistani players!)
+      const isPakBowler = pakPlayerIds.has(b.bowlerId) || pakPlayerNames.has(b.bowler.toLowerCase());
+      if (!isPakBowler) {
+        if (!bowlerStatsMap.has(b.bowler)) {
+          bowlerStatsMap.set(b.bowler, {
+            id: b.bowlerId,
+            name: b.bowler,
+            team: playerTeamMap.get(b.bowler) || 'T20 Team',
+            totalBalls: 0,
+            totalConceded: 0,
+            pressureBalls: 0,
+            pressureConceded: 0,
+            pressureWickets: 0,
+            pressureDots: 0,
+            pressureExtras: 0,
+            deathBalls: 0,
+            deathConceded: 0,
+            deathWickets: 0,
+            deathDots: 0,
+            deathExtras: 0,
+          });
+        }
+        const boStat = bowlerStatsMap.get(b.bowler);
+        boStat.totalBalls++;
+        const bowlerConceded = b.runs + (isWide || isNoBall ? b.extras : 0);
+        boStat.totalConceded += bowlerConceded;
+
+        const isDot = b.totalRuns === 0;
+        const isExtra = isWide || isNoBall;
+
+        if (isHighPressure) {
+          boStat.pressureBalls++;
+          boStat.pressureConceded += bowlerConceded;
+          if (isWicket) boStat.pressureWickets++;
+          if (isDot) boStat.pressureDots++;
+          if (isExtra) boStat.pressureExtras++;
+        }
+
+        if (isDeathOvers) {
+          boStat.deathBalls++;
+          boStat.deathConceded += bowlerConceded;
+          if (isWicket) boStat.deathWickets++;
+          if (isDot) boStat.deathDots++;
+          if (isExtra) boStat.deathExtras++;
+        }
+      }
+    }
+  }
+
+  const rl2 = readline.createInterface({
+    input: fs.createReadStream(path.join(dataDir, 'ball_by_ball.csv')),
+    crlfDelay: Infinity,
+  });
+
+  let currentMatchKey = '';
+  let matchDeliveries = [];
+
+  lineCount = 0;
+  for await (const line of rl2) {
+    lineCount++;
+    if (lineCount === 1) continue;
+    if (!line) continue;
+
+    const cols = line.split(',');
+    const matchId = cols[0]?.trim();
+    const innings = parseInt(cols[1]?.trim(), 10) || 1;
+    const key = `${matchId}_${innings}`;
+
+    if (key !== currentMatchKey) {
+      if (matchDeliveries.length > 0) {
+        processMatchInnings(matchDeliveries);
+      }
+      currentMatchKey = key;
+      matchDeliveries = [];
+    }
+
+    const overId = parseInt(cols[2]?.trim(), 10) || 1;
+    const runs = parseFloat(cols[16]?.trim()) || 0;
+    const isFour = cols[17]?.trim().toLowerCase() === 'true';
+    const isSix = cols[18]?.trim().toLowerCase() === 'true';
+    const isWicket = cols[19]?.trim().toLowerCase() === 'true';
+    const dismissalType = cols[21]?.trim().toLowerCase();
+    const extrasType = cols[23]?.trim().toLowerCase();
+    const extras1 = parseFloat(cols[24]?.trim()) || 0;
+    const extras2 = parseFloat(cols[25]?.trim()) || 0;
+    const totalExtras = extras1 + extras2;
+
+    matchDeliveries.push({
+      matchId,
+      innings,
+      overId,
+      batTeamId: cols[5]?.trim(),
+      bowlTeamId: cols[6]?.trim(),
+      strikerId: cols[7]?.trim(),
+      striker: cols[8]?.trim(),
+      bowlerId: cols[11]?.trim(),
+      bowler: cols[12]?.trim(),
+      runs,
+      isFour,
+      isSix,
+      isWicket,
+      dismissalType,
+      extrasType,
+      extras: totalExtras,
+      totalRuns: runs + totalExtras,
+    });
+  }
+
+  if (matchDeliveries.length > 0) {
+    processMatchInnings(matchDeliveries);
+  }
+
+  // 7. Top 10 Batters (IPL Auction Eligible)
+  console.log('\n--- TOP 10 BATTERS UNDER PRESSURE (IPL AUCTION ELIGIBLE - NO PAKISTAN PLAYERS) ---');
+  const scoredBatters = [];
+
+  for (const b of batterStatsMap.values()) {
+    if (b.pressureBalls < 50) continue;
+
+    const baselineSR = b.totalBalls > 0 ? (b.totalRuns / b.totalBalls) * 100 : 0;
+    const pressureSR = b.pressureBalls > 0 ? (b.pressureRuns / b.pressureBalls) * 100 : 0;
+    const boundaries = b.pressureFours + b.pressureSixes;
+    const boundaryPct = b.pressureBalls > 0 ? (boundaries / b.pressureBalls) * 100 : 0;
+    const dotPct = b.pressureBalls > 0 ? (b.pressureDots / b.pressureBalls) * 100 : 0;
+    const collapseSR = b.collapseBalls > 0 ? (b.collapseRuns / b.collapseBalls) * 100 : pressureSR;
+
+    let battingIRIS = 50.0;
+    if (b.lostCauseBalls >= 6) {
+      const lcBndRate = (b.lostCauseBoundaries / b.lostCauseBalls) * 100;
+      const lcSR = (b.lostCauseRuns / b.lostCauseBalls) * 100;
+      const lcDotAversion = Math.max(0, 100 - (b.lostCauseDots / b.lostCauseBalls) * 100);
+      battingIRIS = (lcBndRate * 0.45) + (Math.min(250, lcSR) * 0.20) + (lcDotAversion * 0.35);
+    } else {
+      battingIRIS = (boundaryPct * 1.5) + (Math.min(220, pressureSR) * 0.22);
+    }
+    battingIRIS = Math.min(99.5, Math.max(35.0, Number(battingIRIS.toFixed(1))));
+
+    const srScore = Math.min(100, (pressureSR / 220) * 100);
+    const bndScore = Math.min(100, (boundaryPct / 35) * 100);
+    const colScore = Math.min(100, (collapseSR / 200) * 100);
+    const volBonus = Math.min(10, Math.log10(b.pressureBalls + 1) * 3);
+
+    const rawClutch = (srScore * 0.32) + (bndScore * 0.22) + (colScore * 0.18) + (battingIRIS * 0.20) + volBonus;
+    const clutchRating = Number(Math.min(98.8, Math.max(60.0, rawClutch)).toFixed(1));
+
+    scoredBatters.push({
+      name: b.name,
+      team: b.team,
+      pressureRuns: b.pressureRuns,
+      pressureBalls: b.pressureBalls,
+      pressureSR: Number(pressureSR.toFixed(1)),
+      baselineSR: Number(baselineSR.toFixed(1)),
+      srDelta: Number((pressureSR - baselineSR).toFixed(1)),
+      collapseSR: Number(collapseSR.toFixed(1)),
+      boundaryPct: Number(boundaryPct.toFixed(1)),
+      battingIRIS,
+      clutchRating,
+    });
+  }
+
+  scoredBatters.sort((a, b) => b.clutchRating - a.clutchRating || b.pressureSR - a.pressureSR);
+  const top10Batters = scoredBatters.slice(0, 10).map((b, idx) => ({ rank: idx + 1, ...b }));
+
+  console.table(top10Batters.map((b) => ({
+    Rank: b.rank,
+    Player: b.name,
+    Team: b.team,
+    'Pressure SR': b.pressureSR,
+    'Baseline SR': b.baselineSR,
+    'Δ SR': b.srDelta,
+    'Collapse SR': b.collapseSR,
+    'Bnd %': b.boundaryPct,
+    IRIS: b.battingIRIS,
+    'Clutch Rating': b.clutchRating,
+  })));
+
+  // 8. Top 10 Bowlers (IPL Auction Eligible)
+  console.log('\n--- TOP 10 BOWLERS UNDER PRESSURE (IPL AUCTION ELIGIBLE - NO PAKISTAN PLAYERS) ---');
+  const scoredBowlers = [];
+
+  for (const b of bowlerStatsMap.values()) {
+    if (b.pressureBalls < 48) continue;
+
+    const baselineEcon = b.totalBalls > 0 ? (b.totalConceded / (b.totalBalls / 6)) : 8.5;
+    const pressureOvers = b.pressureBalls / 6;
+    const pressureEcon = pressureOvers > 0 ? b.pressureConceded / pressureOvers : baselineEcon;
+    const dotPct = b.pressureBalls > 0 ? (b.pressureDots / b.pressureBalls) * 100 : 0;
+    const extraControlRate = b.pressureBalls > 0 ? Math.max(0, (1 - b.pressureExtras / b.pressureBalls) * 100) : 95.0;
+
+    const deathOvers = b.deathBalls / 6;
+    const deathEcon = deathOvers > 0 ? b.deathConceded / deathOvers : pressureEcon;
+
+    const dotScore = dotPct;
+    const extraScore = extraControlRate;
+    const econScore = Math.max(0, 100 - pressureEcon * 8.5);
+    let bowlingIRIS = (dotScore * 0.40) + (extraScore * 0.35) + (econScore * 0.25);
+    bowlingIRIS = Math.min(99.2, Math.max(35.0, Number(bowlingIRIS.toFixed(1))));
+
+    const econClutchScore = Math.max(0, Math.min(100, 100 - (pressureEcon - 5.5) * 10));
+    const wicketScore = Math.min(100, (b.pressureWickets / Math.max(1, pressureOvers)) * 40);
+    const volBonus = Math.min(10, Math.log10(b.pressureBalls + 1) * 3);
+
+    const rawClutch = (econClutchScore * 0.32) + (extraScore * 0.22) + (dotScore * 0.18) + (bowlingIRIS * 0.18) + (wicketScore * 0.05) + volBonus;
+    const clutchRating = Number(Math.min(98.5, Math.max(60.0, rawClutch)).toFixed(1));
+    const econDelta = Number((baselineEcon - pressureEcon).toFixed(2));
+
+    scoredBowlers.push({
+      name: b.name,
+      team: b.team,
+      pressureBalls: b.pressureBalls,
+      pressureOvers: Number(pressureOvers.toFixed(1)),
+      pressureWickets: b.pressureWickets,
+      pressureEcon: Number(pressureEcon.toFixed(2)),
+      baselineEcon: Number(baselineEcon.toFixed(2)),
+      econDelta,
+      dotPct: Number(dotPct.toFixed(1)),
+      extraControlRate: Number(extraControlRate.toFixed(1)),
+      bowlingIRIS,
+      clutchRating,
+    });
+  }
+
+  scoredBowlers.sort((a, b) => b.clutchRating - a.clutchRating || a.pressureEcon - b.pressureEcon);
+  const top10Bowlers = scoredBowlers.slice(0, 10).map((b, idx) => ({ rank: idx + 1, ...b }));
+
+  console.table(top10Bowlers.map((b) => ({
+    Rank: b.rank,
+    Player: b.name,
+    Team: b.team,
+    'Pressure Econ': b.pressureEcon,
+    'Baseline Econ': b.baselineEcon,
+    'Δ Econ': b.econDelta,
+    'Dot %': b.dotPct,
+    'Extra Control %': b.extraControlRate,
+    'Wkts': b.pressureWickets,
+    IRIS: b.bowlingIRIS,
+    'Clutch Rating': b.clutchRating,
+  })));
+
+  // Save updated official submission JSON
+  const outJson = {
+    competition: 'SupeRR Selector Season 2 - Rajasthan Royals',
+    period: '2022 - Present',
+    filter_applied: 'IPL Auction Eligible (Excluding all Pakistani players)',
+    total_deliveries_analyzed: totalDeliveries,
+    high_pressure_deliveries: totalHighPressure,
+    anchor_collapses_tracked: totalCollapses,
+    top_10_batters: top10Batters,
+    top_10_bowlers: top10Bowlers,
+  };
+
+  fs.writeFileSync(path.join(__dirname, '../CIRA_Unstop_Official_Submission.json'), JSON.stringify(outJson, null, 2));
+  console.log('\nUpdated CIRA_Unstop_Official_Submission.json with IPL Auction Eligible Players!');
+}
+
+main().catch(console.error);

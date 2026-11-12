@@ -1,0 +1,811 @@
+match_id,team,player_name
+1001,Kolkata Knight Riders,Shreyas Iyer
+1001,Kolkata Knight Riders,Rinku Singh
+1001,Kolkata Knight Riders,Andre Russell
+1001,Kolkata Knight Riders,Nitish Rana
+1001,Kolkata Knight Riders,Venkatesh Iyer
+1001,Kolkata Knight Riders,Sunil Narine
+1001,Kolkata Knight Riders,Harshit Rana
+1001,Kolkata Knight Riders,Mitchell Starc
+1001,Kolkata Knight Riders,Varun Chakaravarthy
+1001,Sunrisers Hyderabad,Travis Head
+1001,Sunrisers Hyderabad,Heinrich Klaasen
+1001,Sunrisers Hyderabad,Abdul Samad
+1001,Sunrisers Hyderabad,Abhishek Sharma
+1001,Sunrisers Hyderabad,Nitish Kumar Reddy
+1001,Sunrisers Hyderabad,Pat Cummins
+1001,Sunrisers Hyderabad,Bhuvneshwar Kumar
+1001,Sunrisers Hyderabad,T Natarajan
+1001,Sunrisers Hyderabad,Mayank Markande
+1002,Mumbai Indians,Rohit Sharma
+1002,Mumbai Indians,Suryakumar Yadav
+1002,Mumbai Indians,Tim David
+1002,Mumbai Indians,Hardik Pandya
+1002,Mumbai Indians,Tilak Varma
+1002,Mumbai Indians,Jasprit Bumrah
+1002,Mumbai Indians,Gerald Coetzee
+1002,Mumbai Indians,Piyush Chawla
+1002,Mumbai Indians,Akash Madhwal
+1002,Chennai Super Kings,Ruturaj Gaikwad
+1002,Chennai Super Kings,MS Dhoni
+1002,Chennai Super Kings,Shivam Dube
+1002,Chennai Super Kings,Ravindra Jadeja
+1002,Chennai Super Kings,Ajinkya Rahane
+1002,Chennai Super Kings,Matheesha Pathirana
+1002,Chennai Super Kings,Mustafizur Rahman
+1002,Chennai Super Kings,Tushar Deshpande
+1002,Chennai Super Kings,Deepak Chahar
+1003,Royal Challengers Bengaluru,Virat Kohli
+1003,Royal Challengers Bengaluru,Dinesh Karthik
+1003,Royal Challengers Bengaluru,Glenn Maxwell
+1003,Royal Challengers Bengaluru,Rajat Patidar
+1003,Royal Challengers Bengaluru,Faf du Plessis
+1003,Royal Challengers Bengaluru,Mohammed Siraj
+1003,Royal Challengers Bengaluru,Yash Dayal
+1003,Royal Challengers Bengaluru,Lockie Ferguson
+1003,Royal Challengers Bengaluru,Cameron Green
+1003,Gujarat Titans,Shubman Gill
+1003,Gujarat Titans,David Miller
+1003,Gujarat Titans,Rahul Tewatia
+1003,Gujarat Titans,Sai Sudharsan
+1003,Gujarat Titans,Vijay Shankar
+1003,Gujarat Titans,Rashid Khan
+1003,Gujarat Titans,Mohammed Shami
+1003,Gujarat Titans,Mohit Sharma
+1003,Gujarat Titans,Noor Ahmad
+1004,Lucknow Super Giants,KL Rahul
+1004,Lucknow Super Giants,Nicholas Pooran
+1004,Lucknow Super Giants,Marcus Stoinis
+1004,Lucknow Super Giants,Ayush Badoni
+1004,Lucknow Super Giants,Deepak Hooda
+1004,Lucknow Super Giants,Mayank Yadav
+1004,Lucknow Super Giants,Naveen-ul-Haq
+1004,Lucknow Super Giants,Ravi Bishnoi
+1004,Lucknow Super Giants,Mohsin Khan
+1004,Rajasthan Royals,Jos Buttler
+1004,Rajasthan Royals,Sanju Samson
+1004,Rajasthan Royals,Shimron Hetmyer
+1004,Rajasthan Royals,Riyan Parag
+1004,Rajasthan Royals,Dhruv Jurel
+1004,Rajasthan Royals,Yuzvendra Chahal
+1004,Rajasthan Royals,Trent Boult
+1004,Rajasthan Royals,Sandeep Sharma
+1004,Rajasthan Royals,Avesh Khan
+1005,Kolkata Knight Riders,Shreyas Iyer
+1005,Kolkata Knight Riders,Rinku Singh
+1005,Kolkata Knight Riders,Andre Russell
+1005,Kolkata Knight Riders,Nitish Rana
+1005,Kolkata Knight Riders,Venkatesh Iyer
+1005,Kolkata Knight Riders,Sunil Narine
+1005,Kolkata Knight Riders,Harshit Rana
+1005,Kolkata Knight Riders,Mitchell Starc
+1005,Kolkata Knight Riders,Varun Chakaravarthy
+1005,Sunrisers Hyderabad,Travis Head
+1005,Sunrisers Hyderabad,Heinrich Klaasen
+1005,Sunrisers Hyderabad,Abdul Samad
+1005,Sunrisers Hyderabad,Abhishek Sharma
+1005,Sunrisers Hyderabad,Nitish Kumar Reddy
+1005,Sunrisers Hyderabad,Pat Cummins
+1005,Sunrisers Hyderabad,Bhuvneshwar Kumar
+1005,Sunrisers Hyderabad,T Natarajan
+1005,Sunrisers Hyderabad,Mayank Markande
+1006,Mumbai Indians,Rohit Sharma
+1006,Mumbai Indians,Suryakumar Yadav
+1006,Mumbai Indians,Tim David
+1006,Mumbai Indians,Hardik Pandya
+1006,Mumbai Indians,Tilak Varma
+1006,Mumbai Indians,Jasprit Bumrah
+1006,Mumbai Indians,Gerald Coetzee
+1006,Mumbai Indians,Piyush Chawla
+1006,Mumbai Indians,Akash Madhwal
+1006,Chennai Super Kings,Ruturaj Gaikwad
+1006,Chennai Super Kings,MS Dhoni
+1006,Chennai Super Kings,Shivam Dube
+1006,Chennai Super Kings,Ravindra Jadeja
+1006,Chennai Super Kings,Ajinkya Rahane
+1006,Chennai Super Kings,Matheesha Pathirana
+1006,Chennai Super Kings,Mustafizur Rahman
+1006,Chennai Super Kings,Tushar Deshpande
+1006,Chennai Super Kings,Deepak Chahar
+1007,Royal Challengers Bengaluru,Virat Kohli
+1007,Royal Challengers Bengaluru,Dinesh Karthik
+1007,Royal Challengers Bengaluru,Glenn Maxwell
+1007,Royal Challengers Bengaluru,Rajat Patidar
+1007,Royal Challengers Bengaluru,Faf du Plessis
+1007,Royal Challengers Bengaluru,Mohammed Siraj
+1007,Royal Challengers Bengaluru,Yash Dayal
+1007,Royal Challengers Bengaluru,Lockie Ferguson
+1007,Royal Challengers Bengaluru,Cameron Green
+1007,Gujarat Titans,Shubman Gill
+1007,Gujarat Titans,David Miller
+1007,Gujarat Titans,Rahul Tewatia
+1007,Gujarat Titans,Sai Sudharsan
+1007,Gujarat Titans,Vijay Shankar
+1007,Gujarat Titans,Rashid Khan
+1007,Gujarat Titans,Mohammed Shami
+1007,Gujarat Titans,Mohit Sharma
+1007,Gujarat Titans,Noor Ahmad
+1008,Lucknow Super Giants,KL Rahul
+1008,Lucknow Super Giants,Nicholas Pooran
+1008,Lucknow Super Giants,Marcus Stoinis
+1008,Lucknow Super Giants,Ayush Badoni
+1008,Lucknow Super Giants,Deepak Hooda
+1008,Lucknow Super Giants,Mayank Yadav
+1008,Lucknow Super Giants,Naveen-ul-Haq
+1008,Lucknow Super Giants,Ravi Bishnoi
+1008,Lucknow Super Giants,Mohsin Khan
+1008,Rajasthan Royals,Jos Buttler
+1008,Rajasthan Royals,Sanju Samson
+1008,Rajasthan Royals,Shimron Hetmyer
+1008,Rajasthan Royals,Riyan Parag
+1008,Rajasthan Royals,Dhruv Jurel
+1008,Rajasthan Royals,Yuzvendra Chahal
+1008,Rajasthan Royals,Trent Boult
+1008,Rajasthan Royals,Sandeep Sharma
+1008,Rajasthan Royals,Avesh Khan
+1009,Kolkata Knight Riders,Shreyas Iyer
+1009,Kolkata Knight Riders,Rinku Singh
+1009,Kolkata Knight Riders,Andre Russell
+1009,Kolkata Knight Riders,Nitish Rana
+1009,Kolkata Knight Riders,Venkatesh Iyer
+1009,Kolkata Knight Riders,Sunil Narine
+1009,Kolkata Knight Riders,Harshit Rana
+1009,Kolkata Knight Riders,Mitchell Starc
+1009,Kolkata Knight Riders,Varun Chakaravarthy
+1009,Sunrisers Hyderabad,Travis Head
+1009,Sunrisers Hyderabad,Heinrich Klaasen
+1009,Sunrisers Hyderabad,Abdul Samad
+1009,Sunrisers Hyderabad,Abhishek Sharma
+1009,Sunrisers Hyderabad,Nitish Kumar Reddy
+1009,Sunrisers Hyderabad,Pat Cummins
+1009,Sunrisers Hyderabad,Bhuvneshwar Kumar
+1009,Sunrisers Hyderabad,T Natarajan
+1009,Sunrisers Hyderabad,Mayank Markande
+1010,Mumbai Indians,Rohit Sharma
+1010,Mumbai Indians,Suryakumar Yadav
+1010,Mumbai Indians,Tim David
+1010,Mumbai Indians,Hardik Pandya
+1010,Mumbai Indians,Tilak Varma
+1010,Mumbai Indians,Jasprit Bumrah
+1010,Mumbai Indians,Gerald Coetzee
+1010,Mumbai Indians,Piyush Chawla
+1010,Mumbai Indians,Akash Madhwal
+1010,Chennai Super Kings,Ruturaj Gaikwad
+1010,Chennai Super Kings,MS Dhoni
+1010,Chennai Super Kings,Shivam Dube
+1010,Chennai Super Kings,Ravindra Jadeja
+1010,Chennai Super Kings,Ajinkya Rahane
+1010,Chennai Super Kings,Matheesha Pathirana
+1010,Chennai Super Kings,Mustafizur Rahman
+1010,Chennai Super Kings,Tushar Deshpande
+1010,Chennai Super Kings,Deepak Chahar
+1011,Royal Challengers Bengaluru,Virat Kohli
+1011,Royal Challengers Bengaluru,Dinesh Karthik
+1011,Royal Challengers Bengaluru,Glenn Maxwell
+1011,Royal Challengers Bengaluru,Rajat Patidar
+1011,Royal Challengers Bengaluru,Faf du Plessis
+1011,Royal Challengers Bengaluru,Mohammed Siraj
+1011,Royal Challengers Bengaluru,Yash Dayal
+1011,Royal Challengers Bengaluru,Lockie Ferguson
+1011,Royal Challengers Bengaluru,Cameron Green
+1011,Gujarat Titans,Shubman Gill
+1011,Gujarat Titans,David Miller
+1011,Gujarat Titans,Rahul Tewatia
+1011,Gujarat Titans,Sai Sudharsan
+1011,Gujarat Titans,Vijay Shankar
+1011,Gujarat Titans,Rashid Khan
+1011,Gujarat Titans,Mohammed Shami
+1011,Gujarat Titans,Mohit Sharma
+1011,Gujarat Titans,Noor Ahmad
+1012,Lucknow Super Giants,KL Rahul
+1012,Lucknow Super Giants,Nicholas Pooran
+1012,Lucknow Super Giants,Marcus Stoinis
+1012,Lucknow Super Giants,Ayush Badoni
+1012,Lucknow Super Giants,Deepak Hooda
+1012,Lucknow Super Giants,Mayank Yadav
+1012,Lucknow Super Giants,Naveen-ul-Haq
+1012,Lucknow Super Giants,Ravi Bishnoi
+1012,Lucknow Super Giants,Mohsin Khan
+1012,Rajasthan Royals,Jos Buttler
+1012,Rajasthan Royals,Sanju Samson
+1012,Rajasthan Royals,Shimron Hetmyer
+1012,Rajasthan Royals,Riyan Parag
+1012,Rajasthan Royals,Dhruv Jurel
+1012,Rajasthan Royals,Yuzvendra Chahal
+1012,Rajasthan Royals,Trent Boult
+1012,Rajasthan Royals,Sandeep Sharma
+1012,Rajasthan Royals,Avesh Khan
+1013,Kolkata Knight Riders,Shreyas Iyer
+1013,Kolkata Knight Riders,Rinku Singh
+1013,Kolkata Knight Riders,Andre Russell
+1013,Kolkata Knight Riders,Nitish Rana
+1013,Kolkata Knight Riders,Venkatesh Iyer
+1013,Kolkata Knight Riders,Sunil Narine
+1013,Kolkata Knight Riders,Harshit Rana
+1013,Kolkata Knight Riders,Mitchell Starc
+1013,Kolkata Knight Riders,Varun Chakaravarthy
+1013,Sunrisers Hyderabad,Travis Head
+1013,Sunrisers Hyderabad,Heinrich Klaasen
+1013,Sunrisers Hyderabad,Abdul Samad
+1013,Sunrisers Hyderabad,Abhishek Sharma
+1013,Sunrisers Hyderabad,Nitish Kumar Reddy
+1013,Sunrisers Hyderabad,Pat Cummins
+1013,Sunrisers Hyderabad,Bhuvneshwar Kumar
+1013,Sunrisers Hyderabad,T Natarajan
+1013,Sunrisers Hyderabad,Mayank Markande
+1014,Mumbai Indians,Rohit Sharma
+1014,Mumbai Indians,Suryakumar Yadav
+1014,Mumbai Indians,Tim David
+1014,Mumbai Indians,Hardik Pandya
+1014,Mumbai Indians,Tilak Varma
+1014,Mumbai Indians,Jasprit Bumrah
+1014,Mumbai Indians,Gerald Coetzee
+1014,Mumbai Indians,Piyush Chawla
+1014,Mumbai Indians,Akash Madhwal
+1014,Chennai Super Kings,Ruturaj Gaikwad
+1014,Chennai Super Kings,MS Dhoni
+1014,Chennai Super Kings,Shivam Dube
+1014,Chennai Super Kings,Ravindra Jadeja
+1014,Chennai Super Kings,Ajinkya Rahane
+1014,Chennai Super Kings,Matheesha Pathirana
+1014,Chennai Super Kings,Mustafizur Rahman
+1014,Chennai Super Kings,Tushar Deshpande
+1014,Chennai Super Kings,Deepak Chahar
+1015,Royal Challengers Bengaluru,Virat Kohli
+1015,Royal Challengers Bengaluru,Dinesh Karthik
+1015,Royal Challengers Bengaluru,Glenn Maxwell
+1015,Royal Challengers Bengaluru,Rajat Patidar
+1015,Royal Challengers Bengaluru,Faf du Plessis
+1015,Royal Challengers Bengaluru,Mohammed Siraj
+1015,Royal Challengers Bengaluru,Yash Dayal
+1015,Royal Challengers Bengaluru,Lockie Ferguson
+1015,Royal Challengers Bengaluru,Cameron Green
+1015,Gujarat Titans,Shubman Gill
+1015,Gujarat Titans,David Miller
+1015,Gujarat Titans,Rahul Tewatia
+1015,Gujarat Titans,Sai Sudharsan
+1015,Gujarat Titans,Vijay Shankar
+1015,Gujarat Titans,Rashid Khan
+1015,Gujarat Titans,Mohammed Shami
+1015,Gujarat Titans,Mohit Sharma
+1015,Gujarat Titans,Noor Ahmad
+1016,Kolkata Knight Riders,Shreyas Iyer
+1016,Kolkata Knight Riders,Rinku Singh
+1016,Kolkata Knight Riders,Andre Russell
+1016,Kolkata Knight Riders,Nitish Rana
+1016,Kolkata Knight Riders,Venkatesh Iyer
+1016,Kolkata Knight Riders,Sunil Narine
+1016,Kolkata Knight Riders,Harshit Rana
+1016,Kolkata Knight Riders,Mitchell Starc
+1016,Kolkata Knight Riders,Varun Chakaravarthy
+1016,Sunrisers Hyderabad,Travis Head
+1016,Sunrisers Hyderabad,Heinrich Klaasen
+1016,Sunrisers Hyderabad,Abdul Samad
+1016,Sunrisers Hyderabad,Abhishek Sharma
+1016,Sunrisers Hyderabad,Nitish Kumar Reddy
+1016,Sunrisers Hyderabad,Pat Cummins
+1016,Sunrisers Hyderabad,Bhuvneshwar Kumar
+1016,Sunrisers Hyderabad,T Natarajan
+1016,Sunrisers Hyderabad,Mayank Markande
+1017,Mumbai Indians,Rohit Sharma
+1017,Mumbai Indians,Suryakumar Yadav
+1017,Mumbai Indians,Tim David
+1017,Mumbai Indians,Hardik Pandya
+1017,Mumbai Indians,Tilak Varma
+1017,Mumbai Indians,Jasprit Bumrah
+1017,Mumbai Indians,Gerald Coetzee
+1017,Mumbai Indians,Piyush Chawla
+1017,Mumbai Indians,Akash Madhwal
+1017,Chennai Super Kings,Ruturaj Gaikwad
+1017,Chennai Super Kings,MS Dhoni
+1017,Chennai Super Kings,Shivam Dube
+1017,Chennai Super Kings,Ravindra Jadeja
+1017,Chennai Super Kings,Ajinkya Rahane
+1017,Chennai Super Kings,Matheesha Pathirana
+1017,Chennai Super Kings,Mustafizur Rahman
+1017,Chennai Super Kings,Tushar Deshpande
+1017,Chennai Super Kings,Deepak Chahar
+1018,Royal Challengers Bengaluru,Virat Kohli
+1018,Royal Challengers Bengaluru,Dinesh Karthik
+1018,Royal Challengers Bengaluru,Glenn Maxwell
+1018,Royal Challengers Bengaluru,Rajat Patidar
+1018,Royal Challengers Bengaluru,Faf du Plessis
+1018,Royal Challengers Bengaluru,Mohammed Siraj
+1018,Royal Challengers Bengaluru,Yash Dayal
+1018,Royal Challengers Bengaluru,Lockie Ferguson
+1018,Royal Challengers Bengaluru,Cameron Green
+1018,Gujarat Titans,Shubman Gill
+1018,Gujarat Titans,David Miller
+1018,Gujarat Titans,Rahul Tewatia
+1018,Gujarat Titans,Sai Sudharsan
+1018,Gujarat Titans,Vijay Shankar
+1018,Gujarat Titans,Rashid Khan
+1018,Gujarat Titans,Mohammed Shami
+1018,Gujarat Titans,Mohit Sharma
+1018,Gujarat Titans,Noor Ahmad
+1019,Lucknow Super Giants,KL Rahul
+1019,Lucknow Super Giants,Nicholas Pooran
+1019,Lucknow Super Giants,Marcus Stoinis
+1019,Lucknow Super Giants,Ayush Badoni
+1019,Lucknow Super Giants,Deepak Hooda
+1019,Lucknow Super Giants,Mayank Yadav
+1019,Lucknow Super Giants,Naveen-ul-Haq
+1019,Lucknow Super Giants,Ravi Bishnoi
+1019,Lucknow Super Giants,Mohsin Khan
+1019,Rajasthan Royals,Jos Buttler
+1019,Rajasthan Royals,Sanju Samson
+1019,Rajasthan Royals,Shimron Hetmyer
+1019,Rajasthan Royals,Riyan Parag
+1019,Rajasthan Royals,Dhruv Jurel
+1019,Rajasthan Royals,Yuzvendra Chahal
+1019,Rajasthan Royals,Trent Boult
+1019,Rajasthan Royals,Sandeep Sharma
+1019,Rajasthan Royals,Avesh Khan
+1020,Kolkata Knight Riders,Shreyas Iyer
+1020,Kolkata Knight Riders,Rinku Singh
+1020,Kolkata Knight Riders,Andre Russell
+1020,Kolkata Knight Riders,Nitish Rana
+1020,Kolkata Knight Riders,Venkatesh Iyer
+1020,Kolkata Knight Riders,Sunil Narine
+1020,Kolkata Knight Riders,Harshit Rana
+1020,Kolkata Knight Riders,Mitchell Starc
+1020,Kolkata Knight Riders,Varun Chakaravarthy
+1020,Sunrisers Hyderabad,Travis Head
+1020,Sunrisers Hyderabad,Heinrich Klaasen
+1020,Sunrisers Hyderabad,Abdul Samad
+1020,Sunrisers Hyderabad,Abhishek Sharma
+1020,Sunrisers Hyderabad,Nitish Kumar Reddy
+1020,Sunrisers Hyderabad,Pat Cummins
+1020,Sunrisers Hyderabad,Bhuvneshwar Kumar
+1020,Sunrisers Hyderabad,T Natarajan
+1020,Sunrisers Hyderabad,Mayank Markande
+1021,Mumbai Indians,Rohit Sharma
+1021,Mumbai Indians,Suryakumar Yadav
+1021,Mumbai Indians,Tim David
+1021,Mumbai Indians,Hardik Pandya
+1021,Mumbai Indians,Tilak Varma
+1021,Mumbai Indians,Jasprit Bumrah
+1021,Mumbai Indians,Gerald Coetzee
+1021,Mumbai Indians,Piyush Chawla
+1021,Mumbai Indians,Akash Madhwal
+1021,Chennai Super Kings,Ruturaj Gaikwad
+1021,Chennai Super Kings,MS Dhoni
+1021,Chennai Super Kings,Shivam Dube
+1021,Chennai Super Kings,Ravindra Jadeja
+1021,Chennai Super Kings,Ajinkya Rahane
+1021,Chennai Super Kings,Matheesha Pathirana
+1021,Chennai Super Kings,Mustafizur Rahman
+1021,Chennai Super Kings,Tushar Deshpande
+1021,Chennai Super Kings,Deepak Chahar
+1022,Royal Challengers Bengaluru,Virat Kohli
+1022,Royal Challengers Bengaluru,Dinesh Karthik
+1022,Royal Challengers Bengaluru,Glenn Maxwell
+1022,Royal Challengers Bengaluru,Rajat Patidar
+1022,Royal Challengers Bengaluru,Faf du Plessis
+1022,Royal Challengers Bengaluru,Mohammed Siraj
+1022,Royal Challengers Bengaluru,Yash Dayal
+1022,Royal Challengers Bengaluru,Lockie Ferguson
+1022,Royal Challengers Bengaluru,Cameron Green
+1022,Gujarat Titans,Shubman Gill
+1022,Gujarat Titans,David Miller
+1022,Gujarat Titans,Rahul Tewatia
+1022,Gujarat Titans,Sai Sudharsan
+1022,Gujarat Titans,Vijay Shankar
+1022,Gujarat Titans,Rashid Khan
+1022,Gujarat Titans,Mohammed Shami
+1022,Gujarat Titans,Mohit Sharma
+1022,Gujarat Titans,Noor Ahmad
+1023,Lucknow Super Giants,KL Rahul
+1023,Lucknow Super Giants,Nicholas Pooran
+1023,Lucknow Super Giants,Marcus Stoinis
+1023,Lucknow Super Giants,Ayush Badoni
+1023,Lucknow Super Giants,Deepak Hooda
+1023,Lucknow Super Giants,Mayank Yadav
+1023,Lucknow Super Giants,Naveen-ul-Haq
+1023,Lucknow Super Giants,Ravi Bishnoi
+1023,Lucknow Super Giants,Mohsin Khan
+1023,Rajasthan Royals,Jos Buttler
+1023,Rajasthan Royals,Sanju Samson
+1023,Rajasthan Royals,Shimron Hetmyer
+1023,Rajasthan Royals,Riyan Parag
+1023,Rajasthan Royals,Dhruv Jurel
+1023,Rajasthan Royals,Yuzvendra Chahal
+1023,Rajasthan Royals,Trent Boult
+1023,Rajasthan Royals,Sandeep Sharma
+1023,Rajasthan Royals,Avesh Khan
+1024,Kolkata Knight Riders,Shreyas Iyer
+1024,Kolkata Knight Riders,Rinku Singh
+1024,Kolkata Knight Riders,Andre Russell
+1024,Kolkata Knight Riders,Nitish Rana
+1024,Kolkata Knight Riders,Venkatesh Iyer
+1024,Kolkata Knight Riders,Sunil Narine
+1024,Kolkata Knight Riders,Harshit Rana
+1024,Kolkata Knight Riders,Mitchell Starc
+1024,Kolkata Knight Riders,Varun Chakaravarthy
+1024,Sunrisers Hyderabad,Travis Head
+1024,Sunrisers Hyderabad,Heinrich Klaasen
+1024,Sunrisers Hyderabad,Abdul Samad
+1024,Sunrisers Hyderabad,Abhishek Sharma
+1024,Sunrisers Hyderabad,Nitish Kumar Reddy
+1024,Sunrisers Hyderabad,Pat Cummins
+1024,Sunrisers Hyderabad,Bhuvneshwar Kumar
+1024,Sunrisers Hyderabad,T Natarajan
+1024,Sunrisers Hyderabad,Mayank Markande
+1025,Mumbai Indians,Rohit Sharma
+1025,Mumbai Indians,Suryakumar Yadav
+1025,Mumbai Indians,Tim David
+1025,Mumbai Indians,Hardik Pandya
+1025,Mumbai Indians,Tilak Varma
+1025,Mumbai Indians,Jasprit Bumrah
+1025,Mumbai Indians,Gerald Coetzee
+1025,Mumbai Indians,Piyush Chawla
+1025,Mumbai Indians,Akash Madhwal
+1025,Chennai Super Kings,Ruturaj Gaikwad
+1025,Chennai Super Kings,MS Dhoni
+1025,Chennai Super Kings,Shivam Dube
+1025,Chennai Super Kings,Ravindra Jadeja
+1025,Chennai Super Kings,Ajinkya Rahane
+1025,Chennai Super Kings,Matheesha Pathirana
+1025,Chennai Super Kings,Mustafizur Rahman
+1025,Chennai Super Kings,Tushar Deshpande
+1025,Chennai Super Kings,Deepak Chahar
+1026,Royal Challengers Bengaluru,Virat Kohli
+1026,Royal Challengers Bengaluru,Dinesh Karthik
+1026,Royal Challengers Bengaluru,Glenn Maxwell
+1026,Royal Challengers Bengaluru,Rajat Patidar
+1026,Royal Challengers Bengaluru,Faf du Plessis
+1026,Royal Challengers Bengaluru,Mohammed Siraj
+1026,Royal Challengers Bengaluru,Yash Dayal
+1026,Royal Challengers Bengaluru,Lockie Ferguson
+1026,Royal Challengers Bengaluru,Cameron Green
+1026,Gujarat Titans,Shubman Gill
+1026,Gujarat Titans,David Miller
+1026,Gujarat Titans,Rahul Tewatia
+1026,Gujarat Titans,Sai Sudharsan
+1026,Gujarat Titans,Vijay Shankar
+1026,Gujarat Titans,Rashid Khan
+1026,Gujarat Titans,Mohammed Shami
+1026,Gujarat Titans,Mohit Sharma
+1026,Gujarat Titans,Noor Ahmad
+1027,Lucknow Super Giants,KL Rahul
+1027,Lucknow Super Giants,Nicholas Pooran
+1027,Lucknow Super Giants,Marcus Stoinis
+1027,Lucknow Super Giants,Ayush Badoni
+1027,Lucknow Super Giants,Deepak Hooda
+1027,Lucknow Super Giants,Mayank Yadav
+1027,Lucknow Super Giants,Naveen-ul-Haq
+1027,Lucknow Super Giants,Ravi Bishnoi
+1027,Lucknow Super Giants,Mohsin Khan
+1027,Rajasthan Royals,Jos Buttler
+1027,Rajasthan Royals,Sanju Samson
+1027,Rajasthan Royals,Shimron Hetmyer
+1027,Rajasthan Royals,Riyan Parag
+1027,Rajasthan Royals,Dhruv Jurel
+1027,Rajasthan Royals,Yuzvendra Chahal
+1027,Rajasthan Royals,Trent Boult
+1027,Rajasthan Royals,Sandeep Sharma
+1027,Rajasthan Royals,Avesh Khan
+1028,Kolkata Knight Riders,Shreyas Iyer
+1028,Kolkata Knight Riders,Rinku Singh
+1028,Kolkata Knight Riders,Andre Russell
+1028,Kolkata Knight Riders,Nitish Rana
+1028,Kolkata Knight Riders,Venkatesh Iyer
+1028,Kolkata Knight Riders,Sunil Narine
+1028,Kolkata Knight Riders,Harshit Rana
+1028,Kolkata Knight Riders,Mitchell Starc
+1028,Kolkata Knight Riders,Varun Chakaravarthy
+1028,Sunrisers Hyderabad,Travis Head
+1028,Sunrisers Hyderabad,Heinrich Klaasen
+1028,Sunrisers Hyderabad,Abdul Samad
+1028,Sunrisers Hyderabad,Abhishek Sharma
+1028,Sunrisers Hyderabad,Nitish Kumar Reddy
+1028,Sunrisers Hyderabad,Pat Cummins
+1028,Sunrisers Hyderabad,Bhuvneshwar Kumar
+1028,Sunrisers Hyderabad,T Natarajan
+1028,Sunrisers Hyderabad,Mayank Markande
+1029,Mumbai Indians,Rohit Sharma
+1029,Mumbai Indians,Suryakumar Yadav
+1029,Mumbai Indians,Tim David
+1029,Mumbai Indians,Hardik Pandya
+1029,Mumbai Indians,Tilak Varma
+1029,Mumbai Indians,Jasprit Bumrah
+1029,Mumbai Indians,Gerald Coetzee
+1029,Mumbai Indians,Piyush Chawla
+1029,Mumbai Indians,Akash Madhwal
+1029,Chennai Super Kings,Ruturaj Gaikwad
+1029,Chennai Super Kings,MS Dhoni
+1029,Chennai Super Kings,Shivam Dube
+1029,Chennai Super Kings,Ravindra Jadeja
+1029,Chennai Super Kings,Ajinkya Rahane
+1029,Chennai Super Kings,Matheesha Pathirana
+1029,Chennai Super Kings,Mustafizur Rahman
+1029,Chennai Super Kings,Tushar Deshpande
+1029,Chennai Super Kings,Deepak Chahar
+1030,Royal Challengers Bengaluru,Virat Kohli
+1030,Royal Challengers Bengaluru,Dinesh Karthik
+1030,Royal Challengers Bengaluru,Glenn Maxwell
+1030,Royal Challengers Bengaluru,Rajat Patidar
+1030,Royal Challengers Bengaluru,Faf du Plessis
+1030,Royal Challengers Bengaluru,Mohammed Siraj
+1030,Royal Challengers Bengaluru,Yash Dayal
+1030,Royal Challengers Bengaluru,Lockie Ferguson
+1030,Royal Challengers Bengaluru,Cameron Green
+1030,Gujarat Titans,Shubman Gill
+1030,Gujarat Titans,David Miller
+1030,Gujarat Titans,Rahul Tewatia
+1030,Gujarat Titans,Sai Sudharsan
+1030,Gujarat Titans,Vijay Shankar
+1030,Gujarat Titans,Rashid Khan
+1030,Gujarat Titans,Mohammed Shami
+1030,Gujarat Titans,Mohit Sharma
+1030,Gujarat Titans,Noor Ahmad
+1031,Kolkata Knight Riders,Shreyas Iyer
+1031,Kolkata Knight Riders,Rinku Singh
+1031,Kolkata Knight Riders,Andre Russell
+1031,Kolkata Knight Riders,Nitish Rana
+1031,Kolkata Knight Riders,Venkatesh Iyer
+1031,Kolkata Knight Riders,Sunil Narine
+1031,Kolkata Knight Riders,Harshit Rana
+1031,Kolkata Knight Riders,Mitchell Starc
+1031,Kolkata Knight Riders,Varun Chakaravarthy
+1031,Sunrisers Hyderabad,Travis Head
+1031,Sunrisers Hyderabad,Heinrich Klaasen
+1031,Sunrisers Hyderabad,Abdul Samad
+1031,Sunrisers Hyderabad,Abhishek Sharma
+1031,Sunrisers Hyderabad,Nitish Kumar Reddy
+1031,Sunrisers Hyderabad,Pat Cummins
+1031,Sunrisers Hyderabad,Bhuvneshwar Kumar
+1031,Sunrisers Hyderabad,T Natarajan
+1031,Sunrisers Hyderabad,Mayank Markande
+1032,Mumbai Indians,Rohit Sharma
+1032,Mumbai Indians,Suryakumar Yadav
+1032,Mumbai Indians,Tim David
+1032,Mumbai Indians,Hardik Pandya
+1032,Mumbai Indians,Tilak Varma
+1032,Mumbai Indians,Jasprit Bumrah
+1032,Mumbai Indians,Gerald Coetzee
+1032,Mumbai Indians,Piyush Chawla
+1032,Mumbai Indians,Akash Madhwal
+1032,Chennai Super Kings,Ruturaj Gaikwad
+1032,Chennai Super Kings,MS Dhoni
+1032,Chennai Super Kings,Shivam Dube
+1032,Chennai Super Kings,Ravindra Jadeja
+1032,Chennai Super Kings,Ajinkya Rahane
+1032,Chennai Super Kings,Matheesha Pathirana
+1032,Chennai Super Kings,Mustafizur Rahman
+1032,Chennai Super Kings,Tushar Deshpande
+1032,Chennai Super Kings,Deepak Chahar
+1033,Royal Challengers Bengaluru,Virat Kohli
+1033,Royal Challengers Bengaluru,Dinesh Karthik
+1033,Royal Challengers Bengaluru,Glenn Maxwell
+1033,Royal Challengers Bengaluru,Rajat Patidar
+1033,Royal Challengers Bengaluru,Faf du Plessis
+1033,Royal Challengers Bengaluru,Mohammed Siraj
+1033,Royal Challengers Bengaluru,Yash Dayal
+1033,Royal Challengers Bengaluru,Lockie Ferguson
+1033,Royal Challengers Bengaluru,Cameron Green
+1033,Gujarat Titans,Shubman Gill
+1033,Gujarat Titans,David Miller
+1033,Gujarat Titans,Rahul Tewatia
+1033,Gujarat Titans,Sai Sudharsan
+1033,Gujarat Titans,Vijay Shankar
+1033,Gujarat Titans,Rashid Khan
+1033,Gujarat Titans,Mohammed Shami
+1033,Gujarat Titans,Mohit Sharma
+1033,Gujarat Titans,Noor Ahmad
+1034,Lucknow Super Giants,KL Rahul
+1034,Lucknow Super Giants,Nicholas Pooran
+1034,Lucknow Super Giants,Marcus Stoinis
+1034,Lucknow Super Giants,Ayush Badoni
+1034,Lucknow Super Giants,Deepak Hooda
+1034,Lucknow Super Giants,Mayank Yadav
+1034,Lucknow Super Giants,Naveen-ul-Haq
+1034,Lucknow Super Giants,Ravi Bishnoi
+1034,Lucknow Super Giants,Mohsin Khan
+1034,Rajasthan Royals,Jos Buttler
+1034,Rajasthan Royals,Sanju Samson
+1034,Rajasthan Royals,Shimron Hetmyer
+1034,Rajasthan Royals,Riyan Parag
+1034,Rajasthan Royals,Dhruv Jurel
+1034,Rajasthan Royals,Yuzvendra Chahal
+1034,Rajasthan Royals,Trent Boult
+1034,Rajasthan Royals,Sandeep Sharma
+1034,Rajasthan Royals,Avesh Khan
+1035,Kolkata Knight Riders,Shreyas Iyer
+1035,Kolkata Knight Riders,Rinku Singh
+1035,Kolkata Knight Riders,Andre Russell
+1035,Kolkata Knight Riders,Nitish Rana
+1035,Kolkata Knight Riders,Venkatesh Iyer
+1035,Kolkata Knight Riders,Sunil Narine
+1035,Kolkata Knight Riders,Harshit Rana
+1035,Kolkata Knight Riders,Mitchell Starc
+1035,Kolkata Knight Riders,Varun Chakaravarthy
+1035,Sunrisers Hyderabad,Travis Head
+1035,Sunrisers Hyderabad,Heinrich Klaasen
+1035,Sunrisers Hyderabad,Abdul Samad
+1035,Sunrisers Hyderabad,Abhishek Sharma
+1035,Sunrisers Hyderabad,Nitish Kumar Reddy
+1035,Sunrisers Hyderabad,Pat Cummins
+1035,Sunrisers Hyderabad,Bhuvneshwar Kumar
+1035,Sunrisers Hyderabad,T Natarajan
+1035,Sunrisers Hyderabad,Mayank Markande
+1036,Mumbai Indians,Rohit Sharma
+1036,Mumbai Indians,Suryakumar Yadav
+1036,Mumbai Indians,Tim David
+1036,Mumbai Indians,Hardik Pandya
+1036,Mumbai Indians,Tilak Varma
+1036,Mumbai Indians,Jasprit Bumrah
+1036,Mumbai Indians,Gerald Coetzee
+1036,Mumbai Indians,Piyush Chawla
+1036,Mumbai Indians,Akash Madhwal
+1036,Chennai Super Kings,Ruturaj Gaikwad
+1036,Chennai Super Kings,MS Dhoni
+1036,Chennai Super Kings,Shivam Dube
+1036,Chennai Super Kings,Ravindra Jadeja
+1036,Chennai Super Kings,Ajinkya Rahane
+1036,Chennai Super Kings,Matheesha Pathirana
+1036,Chennai Super Kings,Mustafizur Rahman
+1036,Chennai Super Kings,Tushar Deshpande
+1036,Chennai Super Kings,Deepak Chahar
+1037,Royal Challengers Bengaluru,Virat Kohli
+1037,Royal Challengers Bengaluru,Dinesh Karthik
+1037,Royal Challengers Bengaluru,Glenn Maxwell
+1037,Royal Challengers Bengaluru,Rajat Patidar
+1037,Royal Challengers Bengaluru,Faf du Plessis
+1037,Royal Challengers Bengaluru,Mohammed Siraj
+1037,Royal Challengers Bengaluru,Yash Dayal
+1037,Royal Challengers Bengaluru,Lockie Ferguson
+1037,Royal Challengers Bengaluru,Cameron Green
+1037,Gujarat Titans,Shubman Gill
+1037,Gujarat Titans,David Miller
+1037,Gujarat Titans,Rahul Tewatia
+1037,Gujarat Titans,Sai Sudharsan
+1037,Gujarat Titans,Vijay Shankar
+1037,Gujarat Titans,Rashid Khan
+1037,Gujarat Titans,Mohammed Shami
+1037,Gujarat Titans,Mohit Sharma
+1037,Gujarat Titans,Noor Ahmad
+1038,Lucknow Super Giants,KL Rahul
+1038,Lucknow Super Giants,Nicholas Pooran
+1038,Lucknow Super Giants,Marcus Stoinis
+1038,Lucknow Super Giants,Ayush Badoni
+1038,Lucknow Super Giants,Deepak Hooda
+1038,Lucknow Super Giants,Mayank Yadav
+1038,Lucknow Super Giants,Naveen-ul-Haq
+1038,Lucknow Super Giants,Ravi Bishnoi
+1038,Lucknow Super Giants,Mohsin Khan
+1038,Rajasthan Royals,Jos Buttler
+1038,Rajasthan Royals,Sanju Samson
+1038,Rajasthan Royals,Shimron Hetmyer
+1038,Rajasthan Royals,Riyan Parag
+1038,Rajasthan Royals,Dhruv Jurel
+1038,Rajasthan Royals,Yuzvendra Chahal
+1038,Rajasthan Royals,Trent Boult
+1038,Rajasthan Royals,Sandeep Sharma
+1038,Rajasthan Royals,Avesh Khan
+1039,Kolkata Knight Riders,Shreyas Iyer
+1039,Kolkata Knight Riders,Rinku Singh
+1039,Kolkata Knight Riders,Andre Russell
+1039,Kolkata Knight Riders,Nitish Rana
+1039,Kolkata Knight Riders,Venkatesh Iyer
+1039,Kolkata Knight Riders,Sunil Narine
+1039,Kolkata Knight Riders,Harshit Rana
+1039,Kolkata Knight Riders,Mitchell Starc
+1039,Kolkata Knight Riders,Varun Chakaravarthy
+1039,Sunrisers Hyderabad,Travis Head
+1039,Sunrisers Hyderabad,Heinrich Klaasen
+1039,Sunrisers Hyderabad,Abdul Samad
+1039,Sunrisers Hyderabad,Abhishek Sharma
+1039,Sunrisers Hyderabad,Nitish Kumar Reddy
+1039,Sunrisers Hyderabad,Pat Cummins
+1039,Sunrisers Hyderabad,Bhuvneshwar Kumar
+1039,Sunrisers Hyderabad,T Natarajan
+1039,Sunrisers Hyderabad,Mayank Markande
+1040,Mumbai Indians,Rohit Sharma
+1040,Mumbai Indians,Suryakumar Yadav
+1040,Mumbai Indians,Tim David
+1040,Mumbai Indians,Hardik Pandya
+1040,Mumbai Indians,Tilak Varma
+1040,Mumbai Indians,Jasprit Bumrah
+1040,Mumbai Indians,Gerald Coetzee
+1040,Mumbai Indians,Piyush Chawla
+1040,Mumbai Indians,Akash Madhwal
+1040,Chennai Super Kings,Ruturaj Gaikwad
+1040,Chennai Super Kings,MS Dhoni
+1040,Chennai Super Kings,Shivam Dube
+1040,Chennai Super Kings,Ravindra Jadeja
+1040,Chennai Super Kings,Ajinkya Rahane
+1040,Chennai Super Kings,Matheesha Pathirana
+1040,Chennai Super Kings,Mustafizur Rahman
+1040,Chennai Super Kings,Tushar Deshpande
+1040,Chennai Super Kings,Deepak Chahar
+1041,Royal Challengers Bengaluru,Virat Kohli
+1041,Royal Challengers Bengaluru,Dinesh Karthik
+1041,Royal Challengers Bengaluru,Glenn Maxwell
+1041,Royal Challengers Bengaluru,Rajat Patidar
+1041,Royal Challengers Bengaluru,Faf du Plessis
+1041,Royal Challengers Bengaluru,Mohammed Siraj
+1041,Royal Challengers Bengaluru,Yash Dayal
+1041,Royal Challengers Bengaluru,Lockie Ferguson
+1041,Royal Challengers Bengaluru,Cameron Green
+1041,Gujarat Titans,Shubman Gill
+1041,Gujarat Titans,David Miller
+1041,Gujarat Titans,Rahul Tewatia
+1041,Gujarat Titans,Sai Sudharsan
+1041,Gujarat Titans,Vijay Shankar
+1041,Gujarat Titans,Rashid Khan
+1041,Gujarat Titans,Mohammed Shami
+1041,Gujarat Titans,Mohit Sharma
+1041,Gujarat Titans,Noor Ahmad
+1042,Lucknow Super Giants,KL Rahul
+1042,Lucknow Super Giants,Nicholas Pooran
+1042,Lucknow Super Giants,Marcus Stoinis
+1042,Lucknow Super Giants,Ayush Badoni
+1042,Lucknow Super Giants,Deepak Hooda
+1042,Lucknow Super Giants,Mayank Yadav
+1042,Lucknow Super Giants,Naveen-ul-Haq
+1042,Lucknow Super Giants,Ravi Bishnoi
+1042,Lucknow Super Giants,Mohsin Khan
+1042,Rajasthan Royals,Jos Buttler
+1042,Rajasthan Royals,Sanju Samson
+1042,Rajasthan Royals,Shimron Hetmyer
+1042,Rajasthan Royals,Riyan Parag
+1042,Rajasthan Royals,Dhruv Jurel
+1042,Rajasthan Royals,Yuzvendra Chahal
+1042,Rajasthan Royals,Trent Boult
+1042,Rajasthan Royals,Sandeep Sharma
+1042,Rajasthan Royals,Avesh Khan
+1043,Kolkata Knight Riders,Shreyas Iyer
+1043,Kolkata Knight Riders,Rinku Singh
+1043,Kolkata Knight Riders,Andre Russell
+1043,Kolkata Knight Riders,Nitish Rana
+1043,Kolkata Knight Riders,Venkatesh Iyer
+1043,Kolkata Knight Riders,Sunil Narine
+1043,Kolkata Knight Riders,Harshit Rana
+1043,Kolkata Knight Riders,Mitchell Starc
+1043,Kolkata Knight Riders,Varun Chakaravarthy
+1043,Sunrisers Hyderabad,Travis Head
+1043,Sunrisers Hyderabad,Heinrich Klaasen
+1043,Sunrisers Hyderabad,Abdul Samad
+1043,Sunrisers Hyderabad,Abhishek Sharma
+1043,Sunrisers Hyderabad,Nitish Kumar Reddy
+1043,Sunrisers Hyderabad,Pat Cummins
+1043,Sunrisers Hyderabad,Bhuvneshwar Kumar
+1043,Sunrisers Hyderabad,T Natarajan
+1043,Sunrisers Hyderabad,Mayank Markande
+1044,Mumbai Indians,Rohit Sharma
+1044,Mumbai Indians,Suryakumar Yadav
+1044,Mumbai Indians,Tim David
+1044,Mumbai Indians,Hardik Pandya
+1044,Mumbai Indians,Tilak Varma
+1044,Mumbai Indians,Jasprit Bumrah
+1044,Mumbai Indians,Gerald Coetzee
+1044,Mumbai Indians,Piyush Chawla
+1044,Mumbai Indians,Akash Madhwal
+1044,Chennai Super Kings,Ruturaj Gaikwad
+1044,Chennai Super Kings,MS Dhoni
+1044,Chennai Super Kings,Shivam Dube
+1044,Chennai Super Kings,Ravindra Jadeja
+1044,Chennai Super Kings,Ajinkya Rahane
+1044,Chennai Super Kings,Matheesha Pathirana
+1044,Chennai Super Kings,Mustafizur Rahman
+1044,Chennai Super Kings,Tushar Deshpande
+1044,Chennai Super Kings,Deepak Chahar
+1045,Royal Challengers Bengaluru,Virat Kohli
+1045,Royal Challengers Bengaluru,Dinesh Karthik
+1045,Royal Challengers Bengaluru,Glenn Maxwell
+1045,Royal Challengers Bengaluru,Rajat Patidar
+1045,Royal Challengers Bengaluru,Faf du Plessis
+1045,Royal Challengers Bengaluru,Mohammed Siraj
+1045,Royal Challengers Bengaluru,Yash Dayal
+1045,Royal Challengers Bengaluru,Lockie Ferguson
+1045,Royal Challengers Bengaluru,Cameron Green
+1045,Gujarat Titans,Shubman Gill
+1045,Gujarat Titans,David Miller
+1045,Gujarat Titans,Rahul Tewatia
+1045,Gujarat Titans,Sai Sudharsan
+1045,Gujarat Titans,Vijay Shankar
+1045,Gujarat Titans,Rashid Khan
+1045,Gujarat Titans,Mohammed Shami
+1045,Gujarat Titans,Mohit Sharma
+1045,Gujarat Titans,Noor Ahmad
