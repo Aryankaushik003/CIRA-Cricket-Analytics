@@ -30,6 +30,7 @@ async function processRealCompetitionData(options = {}) {
   const anchorMultiplier = options.anchorMultiplier || 1.5;
   const lostCauseRrr = options.lostCauseRrr || 18.0;
   const excludePakistan = options.excludePakistan !== false; // Default true!
+  const excludeRetained = options.excludeRetained !== false; // Default true! Filter out retained core stalwarts
 
   // 1. Teams
   const teamIdNameMap = new Map();
@@ -76,10 +77,11 @@ async function processRealCompetitionData(options = {}) {
     }
   }
 
-  // 3. Player mappings and identify Pakistani Player IDs
+  // 3. Player mappings, identify Pakistani Player IDs & Multi-Season Loyalty
   const pakPlayerIds = new Set();
   const pakPlayerNames = new Set();
   const playerTeamMap = new Map();
+  const iplPlayerSeasons = new Map(); // playerNameLower -> { teams: Set, seasons: Set }
 
   if (fs.existsSync(path.join(dataPackDir, 'competition_team_player_mapping.csv'))) {
     const mapContent = fs.readFileSync(path.join(dataPackDir, 'competition_team_player_mapping.csv'), 'utf8');
@@ -89,6 +91,7 @@ async function processRealCompetitionData(options = {}) {
       if (!line) continue;
       const parts = line.split(',');
       if (parts.length >= 6) {
+        const compName = parts[1].trim();
         const teamId = parts[2].trim();
         const teamName = parts[3].trim();
         const pId = parts[4].trim();
@@ -99,7 +102,34 @@ async function processRealCompetitionData(options = {}) {
         } else {
           playerTeamMap.set(pName, teamName);
         }
+
+        if (compName.toUpperCase().includes('IPL')) {
+          const lowerName = pName.toLowerCase();
+          if (!iplPlayerSeasons.has(lowerName)) {
+            iplPlayerSeasons.set(lowerName, { teams: new Set(), seasons: new Set() });
+          }
+          const data = iplPlayerSeasons.get(lowerName);
+          data.teams.add(teamName);
+          data.seasons.add(compName);
+        }
       }
+    }
+  }
+
+  // Base list of renowned single-franchise core pillars
+  const KNOWN_RETAINED_CORE = new Set([
+    'jasprit bumrah', 'sunil narine', 'virat kohli', 'rohit sharma', 'suryakumar yadav',
+    'ms dhoni', 'mahendra singh dhoni', 'ruturaj gaikwad', 'ravindra jadeja',
+    'yashasvi jaiswal', 'riyan parag', 'dhruv jurel', 'arshdeep singh', 'axar patel',
+    'kuldeep yadav', 'rajat patidar', 'shivam dube', 'devon conway', 'mukesh choudhary',
+    'prabhsimran singh', 'harpreet brar', 'namboori tilak varma', 'tilak varma', 'naman dhir',
+    'andre russell'
+  ]);
+
+  const retainedStalwarts = new Set(KNOWN_RETAINED_CORE);
+  for (const [name, data] of iplPlayerSeasons.entries()) {
+    if (data.teams.size === 1 && data.seasons.size >= 3) {
+      retainedStalwarts.add(name);
     }
   }
 
@@ -517,10 +547,15 @@ async function processRealCompetitionData(options = {}) {
 
     const scoutingReport = `${b.name} (${b.team}) registered an elite CIRA Clutch Rating of ${clutchRating}. In high-pressure deliveries (RRR > 8.0 & Death), struck at ${pressureSR.toFixed(1)} SR (${srDiff >= 0 ? '+' : ''}${srDiff.toFixed(1)} vs baseline) with a ${boundaryPct.toFixed(1)}% boundary rate. During the 15-ball window following their anchor's dismissal, accelerated at ${collapseSR.toFixed(1)} SR, exhibiting a resilience IRIS rating of ${battingIRIS}.`;
 
+    const isRetained = retainedStalwarts.has(b.name.toLowerCase());
+    const marketStatus = isRetained ? 'Retained Core' : 'Auction Targetable';
+
     allBatters.push({
       rank: 0,
       name: b.name,
       team: b.team,
+      isRetained,
+      marketStatus,
       totalRuns: b.totalRuns,
       totalBalls: b.totalBalls,
       baselineStrikeRate: Number(baselineSR.toFixed(1)),
@@ -546,8 +581,13 @@ async function processRealCompetitionData(options = {}) {
     });
   }
 
-  const qualifiedBatters = allBatters.filter((b) => b.pressureBalls >= minBatterBalls);
-  const candidateBatters = qualifiedBatters.length >= 10 ? qualifiedBatters : allBatters;
+  let qualifiedBatters = allBatters.filter((b) => b.pressureBalls >= minBatterBalls);
+  if (excludeRetained) {
+    qualifiedBatters = qualifiedBatters.filter((b) => !b.isRetained);
+  }
+  const candidateBatters = qualifiedBatters.length >= 10
+    ? qualifiedBatters
+    : allBatters.filter((b) => !excludeRetained || !b.isRetained);
   candidateBatters.sort((a, b) => b.clutchRating - a.clutchRating || b.pressureStrikeRate - a.pressureStrikeRate);
   candidateBatters.forEach((b, idx) => {
     b.rank = idx + 1;
@@ -592,10 +632,15 @@ async function processRealCompetitionData(options = {}) {
 
     const scoutingReport = `${b.name} (${b.team}) earned a standout CIRA Clutch Rating of ${clutchRating}. Operating in death overs and defending targets, conceded only ${pressureEcon.toFixed(2)} RPO (${econDiff >= 0 ? '-' : '+'}${Math.abs(econDiff).toFixed(2)} vs baseline) with ${dotPct.toFixed(1)}% dot balls and ${extraControlRate.toFixed(1)}% extra control discipline. Bowling IRIS: ${bowlingIRIS}.`;
 
+    const isRetained = retainedStalwarts.has(b.name.toLowerCase());
+    const marketStatus = isRetained ? 'Retained Core' : 'Auction Targetable';
+
     allBowlers.push({
       rank: 0,
       name: b.name,
       team: b.team,
+      isRetained,
+      marketStatus,
       totalBalls: b.totalBalls,
       totalRunsConceded: b.totalConceded,
       baselineEconomy: Number(baselineEcon.toFixed(2)),
@@ -620,8 +665,13 @@ async function processRealCompetitionData(options = {}) {
     });
   }
 
-  const qualifiedBowlers = allBowlers.filter((b) => b.pressureBalls >= minBowlerBalls);
-  const candidateBowlers = qualifiedBowlers.length >= 10 ? qualifiedBowlers : allBowlers;
+  let qualifiedBowlers = allBowlers.filter((b) => b.pressureBalls >= minBowlerBalls);
+  if (excludeRetained) {
+    qualifiedBowlers = qualifiedBowlers.filter((b) => !b.isRetained);
+  }
+  const candidateBowlers = qualifiedBowlers.length >= 10
+    ? qualifiedBowlers
+    : allBowlers.filter((b) => !excludeRetained || !b.isRetained);
   candidateBowlers.sort((a, b) => b.clutchRating - a.clutchRating || a.pressureEconomy - b.pressureEconomy);
   candidateBowlers.forEach((b, idx) => {
     b.rank = idx + 1;
@@ -642,7 +692,11 @@ async function processRealCompetitionData(options = {}) {
       seasonRange: `${minYear} - Present (${compFilter.toUpperCase()})`,
       generatedAt: new Date().toISOString(),
       anchorPlayers: displayAnchors,
-      auctionEligibilityRule: 'Pakistan Players Excluded for IPL Auction Compliance',
+      auctionEligibilityRule: excludeRetained
+        ? 'Auction-Targetable Players Only (Retained Core Stalwarts & Pakistan Players Excluded)'
+        : 'All Eligible Players (Pakistan Players Excluded)',
+      excludeRetained,
+      retainedStalwartsCount: retainedStalwarts.size,
     },
   };
 }

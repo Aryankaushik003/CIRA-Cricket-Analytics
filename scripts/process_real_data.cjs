@@ -5,7 +5,10 @@ const readline = require('readline');
 const dataDir = path.join(__dirname, '../real_dataset/Data Pack');
 
 async function main() {
-  console.log('=== CIRA ANALYTICS: PROCESSING WITH PAKISTAN PLAYERS EXCLUDED FOR IPL AUCTION ===\n');
+  const excludeRetained = process.argv.includes('--exclude-retained');
+
+  console.log(`=== CIRA ANALYTICS: PROCESSING DATASET ===`);
+  console.log(`Auction Filter: ${excludeRetained ? 'ENABLED (Excluding Retained Stalwarts & Pakistan Players)' : 'DISABLED (All Auction Eligible Non-Pak Players)'}\n`);
 
   // 1. Read teams.csv
   const teamIdNameMap = new Map();
@@ -86,10 +89,11 @@ async function main() {
     });
   }
 
-  // 4. Identify all Pakistani Player IDs from competition mappings and playing XI
+  // 4. Identify Pakistani Player IDs & Multi-Season Franchise Loyalty
   const pakPlayerIds = new Set();
   const pakPlayerNames = new Set();
   const playerTeamMap = new Map();
+  const iplPlayerSeasons = new Map(); // playerName -> { teams: Set, seasons: Set }
 
   const mapContent = fs.readFileSync(path.join(dataDir, 'competition_team_player_mapping.csv'), 'utf8');
   const mapLines = mapContent.split('\n');
@@ -98,22 +102,41 @@ async function main() {
     if (!line) continue;
     const parts = line.split(',');
     if (parts.length >= 6) {
+      const compName = parts[1].trim();
       const teamId = parts[2].trim();
       const teamName = parts[3].trim();
       const pId = parts[4].trim();
       const pName = parts[5].trim();
+
       if (pakTeamIds.has(teamId) || teamName.toLowerCase().includes('pakistan')) {
         pakPlayerIds.add(pId);
         pakPlayerNames.add(pName.toLowerCase());
       } else {
         playerTeamMap.set(pName, teamName);
       }
+
+      if (compName.includes('IPL')) {
+        if (!iplPlayerSeasons.has(pName)) {
+          iplPlayerSeasons.set(pName, { teams: new Set(), seasons: new Set() });
+        }
+        const data = iplPlayerSeasons.get(pName);
+        data.teams.add(teamName);
+        data.seasons.add(compName);
+      }
     }
   }
 
+  // Multi-Season Franchise Loyalty Check:
+  // Players who played for only 1 single franchise across >= 3 seasons without changing teams
+  const retainedStalwarts = new Set();
+  for (const [name, data] of iplPlayerSeasons.entries()) {
+    if (data.teams.size === 1 && data.seasons.size >= 3) {
+      retainedStalwarts.add(name.toLowerCase());
+    }
+  }
+  console.log(`Identified ${retainedStalwarts.size} Retained Core Franchise Stalwarts (e.g. Bumrah, Narine, Kohli).`);
+
   // 5. Pass 1 over ball_by_ball.csv:
-  // - Find any additional player IDs appearing for Pakistani teams
-  // - Accumulate season runs for anchors
   const firstInningsTotals = new Map();
   const teamSeasonBatterRuns = new Map();
 
@@ -173,8 +196,6 @@ async function main() {
       }
     }
   }
-
-  console.log(`Identified ${pakPlayerIds.size} Pakistan player IDs to EXCLUDE for IPL auction eligibility.`);
 
   // Anchors
   const teamSeasonAnchors = new Map();
@@ -279,12 +300,11 @@ async function main() {
       const isHighPressure = effectivePI >= 1.45 || (isChase && rrr > 8.0) || isDeathOvers || wicketsLost >= 6 || isCollapseActive;
       if (isHighPressure) totalHighPressure++;
 
-      // Batter aggregation (EXCLUDE Pakistani players!)
+      // Batter
       const isPakBatter = pakPlayerIds.has(b.strikerId) || pakPlayerNames.has(b.striker.toLowerCase());
       if (!isWide && !isPakBatter) {
         if (!batterStatsMap.has(b.striker)) {
           batterStatsMap.set(b.striker, {
-            id: b.strikerId,
             name: b.striker,
             team: playerTeamMap.get(b.striker) || 'T20 Team',
             totalBalls: 0,
@@ -327,12 +347,11 @@ async function main() {
         }
       }
 
-      // Bowler aggregation (EXCLUDE Pakistani players!)
+      // Bowler
       const isPakBowler = pakPlayerIds.has(b.bowlerId) || pakPlayerNames.has(b.bowler.toLowerCase());
       if (!isPakBowler) {
         if (!bowlerStatsMap.has(b.bowler)) {
           bowlerStatsMap.set(b.bowler, {
-            id: b.bowlerId,
             name: b.bowler,
             team: playerTeamMap.get(b.bowler) || 'T20 Team',
             totalBalls: 0,
@@ -403,35 +422,24 @@ async function main() {
       matchDeliveries = [];
     }
 
-    const overId = parseInt(cols[2]?.trim(), 10) || 1;
-    const runs = parseFloat(cols[16]?.trim()) || 0;
-    const isFour = cols[17]?.trim().toLowerCase() === 'true';
-    const isSix = cols[18]?.trim().toLowerCase() === 'true';
-    const isWicket = cols[19]?.trim().toLowerCase() === 'true';
-    const dismissalType = cols[21]?.trim().toLowerCase();
-    const extrasType = cols[23]?.trim().toLowerCase();
-    const extras1 = parseFloat(cols[24]?.trim()) || 0;
-    const extras2 = parseFloat(cols[25]?.trim()) || 0;
-    const totalExtras = extras1 + extras2;
-
     matchDeliveries.push({
       matchId,
       innings,
-      overId,
+      overId: parseInt(cols[2]?.trim(), 10) || 1,
       batTeamId: cols[5]?.trim(),
       bowlTeamId: cols[6]?.trim(),
       strikerId: cols[7]?.trim(),
       striker: cols[8]?.trim(),
       bowlerId: cols[11]?.trim(),
       bowler: cols[12]?.trim(),
-      runs,
-      isFour,
-      isSix,
-      isWicket,
-      dismissalType,
-      extrasType,
-      extras: totalExtras,
-      totalRuns: runs + totalExtras,
+      runs: parseFloat(cols[16]?.trim()) || 0,
+      isFour: cols[17]?.trim().toLowerCase() === 'true',
+      isSix: cols[18]?.trim().toLowerCase() === 'true',
+      isWicket: cols[19]?.trim().toLowerCase() === 'true',
+      dismissalType: cols[21]?.trim().toLowerCase(),
+      extrasType: cols[23]?.trim().toLowerCase(),
+      extras: (parseFloat(cols[24]?.trim()) || 0) + (parseFloat(cols[25]?.trim()) || 0),
+      totalRuns: (parseFloat(cols[16]?.trim()) || 0) + (parseFloat(cols[24]?.trim()) || 0) + (parseFloat(cols[25]?.trim()) || 0),
     });
   }
 
@@ -439,12 +447,14 @@ async function main() {
     processMatchInnings(matchDeliveries);
   }
 
-  // 7. Top 10 Batters (IPL Auction Eligible)
-  console.log('\n--- TOP 10 BATTERS UNDER PRESSURE (IPL AUCTION ELIGIBLE - NO PAKISTAN PLAYERS) ---');
+  // 7. Top 10 Batters
+  console.log(`\n--- TOP 10 BATTERS UNDER PRESSURE ${excludeRetained ? '(AUCTION TARGETS ONLY - EXCLUDING RETAINED)' : '(ALL ELIGIBLE)'} ---`);
   const scoredBatters = [];
 
   for (const b of batterStatsMap.values()) {
     if (b.pressureBalls < 50) continue;
+    const isRetained = retainedStalwarts.has(b.name.toLowerCase());
+    if (excludeRetained && isRetained) continue; // Exclude retained core players!
 
     const baselineSR = b.totalBalls > 0 ? (b.totalRuns / b.totalBalls) * 100 : 0;
     const pressureSR = b.pressureBalls > 0 ? (b.pressureRuns / b.pressureBalls) * 100 : 0;
@@ -475,6 +485,8 @@ async function main() {
     scoredBatters.push({
       name: b.name,
       team: b.team,
+      isRetained,
+      marketStatus: isRetained ? 'Retained Core' : 'Auction Targetable',
       pressureRuns: b.pressureRuns,
       pressureBalls: b.pressureBalls,
       pressureSR: Number(pressureSR.toFixed(1)),
@@ -494,6 +506,7 @@ async function main() {
     Rank: b.rank,
     Player: b.name,
     Team: b.team,
+    Status: b.marketStatus,
     'Pressure SR': b.pressureSR,
     'Baseline SR': b.baselineSR,
     'Δ SR': b.srDelta,
@@ -503,12 +516,14 @@ async function main() {
     'Clutch Rating': b.clutchRating,
   })));
 
-  // 8. Top 10 Bowlers (IPL Auction Eligible)
-  console.log('\n--- TOP 10 BOWLERS UNDER PRESSURE (IPL AUCTION ELIGIBLE - NO PAKISTAN PLAYERS) ---');
+  // 8. Top 10 Bowlers
+  console.log(`\n--- TOP 10 BOWLERS UNDER PRESSURE ${excludeRetained ? '(AUCTION TARGETS ONLY - EXCLUDING RETAINED)' : '(ALL ELIGIBLE)'} ---`);
   const scoredBowlers = [];
 
   for (const b of bowlerStatsMap.values()) {
     if (b.pressureBalls < 48) continue;
+    const isRetained = retainedStalwarts.has(b.name.toLowerCase());
+    if (excludeRetained && isRetained) continue; // Exclude retained core players!
 
     const baselineEcon = b.totalBalls > 0 ? (b.totalConceded / (b.totalBalls / 6)) : 8.5;
     const pressureOvers = b.pressureBalls / 6;
@@ -536,6 +551,8 @@ async function main() {
     scoredBowlers.push({
       name: b.name,
       team: b.team,
+      isRetained,
+      marketStatus: isRetained ? 'Retained Core' : 'Auction Targetable',
       pressureBalls: b.pressureBalls,
       pressureOvers: Number(pressureOvers.toFixed(1)),
       pressureWickets: b.pressureWickets,
@@ -556,6 +573,7 @@ async function main() {
     Rank: b.rank,
     Player: b.name,
     Team: b.team,
+    Status: b.marketStatus,
     'Pressure Econ': b.pressureEcon,
     'Baseline Econ': b.baselineEcon,
     'Δ Econ': b.econDelta,
@@ -566,11 +584,15 @@ async function main() {
     'Clutch Rating': b.clutchRating,
   })));
 
-  // Save updated official submission JSON
+  // Save JSON
+  const outFileName = excludeRetained
+    ? 'CIRA_Unstop_Auction_Targets_Submission.json'
+    : 'CIRA_Unstop_Official_Submission.json';
+
   const outJson = {
     competition: 'SupeRR Selector Season 2 - Rajasthan Royals',
     period: '2022 - Present',
-    filter_applied: 'IPL Auction Eligible (Excluding all Pakistani players)',
+    auction_filter: excludeRetained ? 'Auction-Targetable Players Only (Retained Stalwarts Excluded)' : 'All Eligible Players',
     total_deliveries_analyzed: totalDeliveries,
     high_pressure_deliveries: totalHighPressure,
     anchor_collapses_tracked: totalCollapses,
@@ -578,8 +600,8 @@ async function main() {
     top_10_bowlers: top10Bowlers,
   };
 
-  fs.writeFileSync(path.join(__dirname, '../CIRA_Unstop_Official_Submission.json'), JSON.stringify(outJson, null, 2));
-  console.log('\nUpdated CIRA_Unstop_Official_Submission.json with IPL Auction Eligible Players!');
+  fs.writeFileSync(path.join(__dirname, '../' + outFileName), JSON.stringify(outJson, null, 2));
+  console.log(`\nSaved ${outFileName}!`);
 }
 
 main().catch(console.error);

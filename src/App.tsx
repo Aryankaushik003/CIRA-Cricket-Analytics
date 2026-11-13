@@ -75,6 +75,7 @@ export default function App() {
   const [showExportModal, setShowExportModal] = useState(false);
   const [config, setConfig] = useState<AlgorithmConfig>(DEFAULT_CONFIG);
   const [compFilter, setCompFilter] = useState<'all' | 'ipl' | 't20i'>('all');
+  const [excludeRetained, setExcludeRetained] = useState<boolean>(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -97,10 +98,12 @@ export default function App() {
   /**
    * Load and Process Real Competition Dataset from Backend
    */
-  const handleLoadRealData = async (celebrate = true) => {
+  const handleLoadRealData = async (celebrate = true, overrideExcludeRetained?: boolean) => {
     setIsProcessing(true);
     setStatusMessage('Connecting to CIRA Backend Engine (Processing 200,999 Deliveries)...');
     setErrorMessage('');
+
+    const activeExcludeRetained = overrideExcludeRetained !== undefined ? overrideExcludeRetained : excludeRetained;
 
     try {
       const response = await fetch('/api/process-real', {
@@ -114,6 +117,7 @@ export default function App() {
           rrrThreshold: config.rrrHighPressureThreshold,
           anchorMultiplier: config.anchorCollapseMultiplier,
           lostCauseRrr: config.lostCauseRrrThreshold,
+          excludeRetained: activeExcludeRetained,
         }),
       });
 
@@ -395,6 +399,27 @@ export default function App() {
   };
 
   /**
+   * Handle Auction Retention Filter Toggle
+   */
+  const handleToggleExcludeRetained = (newVal: boolean) => {
+    setExcludeRetained(newVal);
+    setConfig((prev) => ({ ...prev, excludeRetained: newVal }));
+    if (isRealDataActive) {
+      handleLoadRealData(false, newVal);
+    } else if (rawBalls.length > 0) {
+      const ciraRes = runCIRAEngine(
+        rawBalls,
+        rawMatches,
+        rawCompetitions,
+        rawPlayingEleven,
+        rawMappings,
+        { ...config, excludeRetained: newVal }
+      );
+      setResults(ciraRes);
+    }
+  };
+
+  /**
    * Reset All
    */
   const handleReset = () => {
@@ -422,6 +447,8 @@ export default function App() {
         setMinYear={handleSetMinYear}
         compFilter={compFilter}
         setCompFilter={handleSetCompFilter}
+        excludeRetained={excludeRetained}
+        setExcludeRetained={handleToggleExcludeRetained}
         onReset={handleReset}
         onOpenExport={() => setShowExportModal(true)}
         onLoadRealData={() => handleLoadRealData(true)}
@@ -538,6 +565,7 @@ export default function App() {
       {showExportModal && (
         <ExportModal
           results={results}
+          excludeRetained={excludeRetained}
           onClose={() => setShowExportModal(false)}
         />
       )}

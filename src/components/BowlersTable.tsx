@@ -92,6 +92,7 @@ export const BowlersTable: React.FC<BowlersTableProps> = ({
               <tr className="border-b border-slate-800 bg-slate-950/80 text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
                 <th className="py-3.5 px-4 w-14">Rank</th>
                 <th className="py-3.5 px-4">Player &amp; Franchise</th>
+                <th className="py-3.5 px-3 text-center">Status</th>
                 <th className="py-3.5 px-4 text-right">Pressure Econ</th>
                 <th className="py-3.5 px-4 text-right">Baseline Econ</th>
                 <th className="py-3.5 px-4 text-right">Econ Delta (Δ)</th>
@@ -134,6 +135,19 @@ export const BowlersTable: React.FC<BowlersTableProps> = ({
                           </div>
                         </div>
                       </div>
+                    </td>
+
+                    {/* Auction / Market Status */}
+                    <td className="py-3 px-3 text-center whitespace-nowrap">
+                      {b.isRetained ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                          🔒 Retained Core
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                          🎯 Auction Target
+                        </span>
+                      )}
                     </td>
 
                     {/* Pressure Economy */}

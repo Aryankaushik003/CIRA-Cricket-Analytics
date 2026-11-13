@@ -14,10 +14,11 @@ import { CIRAResults } from '../types/cricket';
 
 interface ExportModalProps {
   results: CIRAResults | null;
+  excludeRetained?: boolean;
   onClose: () => void;
 }
 
-export const ExportModal: React.FC<ExportModalProps> = ({ results, onClose }) => {
+export const ExportModal: React.FC<ExportModalProps> = ({ results, excludeRetained = true, onClose }) => {
   const [copiedType, setCopiedType] = useState<string | null>(null);
   const [activePreview, setActivePreview] = useState<'text' | 'json' | 'csv'>('text');
 
@@ -29,6 +30,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ results, onClose }) =>
   const unstopFormattedText = `==========================================================
 CIRA: CLUTCH-INDEX & IMPROBABLE RESILIENCE ANALYTICS
 UNSTOP SUBMISSION REPORT (2022+ DATASET)
+Auction Target Filter: ${excludeRetained ? 'ACTIVE (Retained Core Stalwarts Excluded - Auction Targets Only)' : 'ALL PLAYERS (Including Retained Core)'}
 Generated: ${new Date(metadata.generatedAt).toLocaleString()}
 ==========================================================
 
@@ -36,7 +38,7 @@ Generated: ${new Date(metadata.generatedAt).toLocaleString()}
 ${topBatters
   .map(
     (b) =>
-      `${b.rank}. ${b.name} (${b.team}) | Pressure SR: ${b.pressureStrikeRate.toFixed(1)} | Baseline SR: ${b.baselineStrikeRate.toFixed(1)} | IRIS: ${b.battingIRIS.toFixed(1)} | Clutch Rating: ${b.clutchRating.toFixed(1)}`
+      `${b.rank}. ${b.name} (${b.team}) [${b.marketStatus || (b.isRetained ? 'Retained Core' : 'Auction Target')}] | Pressure SR: ${b.pressureStrikeRate.toFixed(1)} | Baseline SR: ${b.baselineStrikeRate.toFixed(1)} | Δ SR: ${b.strikeRateDifferential >= 0 ? '+' : ''}${b.strikeRateDifferential.toFixed(1)} | IRIS: ${b.battingIRIS.toFixed(1)} | Clutch Rating: ${b.clutchRating.toFixed(1)}`
   )
   .join('\n')}
 
@@ -44,19 +46,23 @@ ${topBatters
 ${topBowlers
   .map(
     (b) =>
-      `${b.rank}. ${b.name} (${b.team}) | Pressure Econ: ${b.pressureEconomy.toFixed(2)} | Extra Control: ${b.extraControlRate.toFixed(1)}% | Dot%: ${b.pressureDotPercent.toFixed(1)}% | IRIS: ${b.bowlingIRIS.toFixed(1)} | Clutch Rating: ${b.clutchRating.toFixed(1)}`
+      `${b.rank}. ${b.name} (${b.team}) [${b.marketStatus || (b.isRetained ? 'Retained Core' : 'Auction Target')}] | Pressure Econ: ${b.pressureEconomy.toFixed(2)} | Extra Control: ${b.extraControlRate.toFixed(1)}% | Dot%: ${b.pressureDotPercent.toFixed(1)}% | IRIS: ${b.bowlingIRIS.toFixed(1)} | Clutch Rating: ${b.clutchRating.toFixed(1)}`
   )
   .join('\n')}
 
---- SECTION 3: CIRA METHODOLOGY & SITUATIONAL FACTORS ---
+--- SECTION 3: CIRA METHODOLOGY & AUCTION TARGET RULES ---
 - Situational Pressure Index (PI): Dynamic RRR > 8.0, overs >= 15, low wickets in hand.
 - Icon Anchor Collapse: 1.5x multiplier applied for 15 deliveries post top-scorer dismissal.
 - Improbable Resilience Index (IRIS): Evaluates lost-cause boundary rates (RRR >= 18.0) and death-overs dot defense.
+- Auction Eligibility Engine: Franchise stalwarts with 3+ consecutive single-team loyalty (Bumrah, Narine, Kohli) flagged as Retained Core; all Pakistan players excluded per IPL auction regulations.
 ==========================================================`;
 
   // Generate Formatted JSON
   const jsonExportData = {
     competition: 'CIRA Cricket Analytics 2022-Present',
+    auction_filter: excludeRetained
+      ? 'Auction-Targetable Players Only (Retained Core Excluded)'
+      : 'All Eligible Players',
     generated_at: metadata.generatedAt,
     metadata: {
       matches_evaluated: metadata.matchesCount,
@@ -71,6 +77,8 @@ ${topBowlers
       rank: b.rank,
       player_name: b.name,
       team: b.team,
+      market_status: b.marketStatus || (b.isRetained ? 'Retained Core' : 'Auction Targetable'),
+      is_retained: b.isRetained || false,
       pressure_strike_rate: b.pressureStrikeRate,
       baseline_strike_rate: b.baselineStrikeRate,
       strike_rate_delta: b.strikeRateDifferential,
@@ -86,6 +94,8 @@ ${topBowlers
       rank: b.rank,
       player_name: b.name,
       team: b.team,
+      market_status: b.marketStatus || (b.isRetained ? 'Retained Core' : 'Auction Targetable'),
+      is_retained: b.isRetained || false,
       pressure_economy: b.pressureEconomy,
       baseline_economy: b.baselineEconomy,
       economy_delta: b.economyDifferential,
@@ -104,18 +114,18 @@ ${topBowlers
 
   // Generate CSV Format
   const battersCsv = [
-    'Rank,Player,Team,Pressure_SR,Baseline_SR,SR_Delta,Collapse_SR,Boundary_Pct,Batting_IRIS,Clutch_Rating',
+    'Rank,Player,Team,Market_Status,Pressure_SR,Baseline_SR,SR_Delta,Collapse_SR,Boundary_Pct,Batting_IRIS,Clutch_Rating',
     ...topBatters.map(
       (b) =>
-        `${b.rank},"${b.name}","${b.team}",${b.pressureStrikeRate},${b.baselineStrikeRate},${b.strikeRateDifferential},${b.collapseStrikeRate},${b.pressureBoundaryPercent},${b.battingIRIS},${b.clutchRating}`
+        `${b.rank},"${b.name}","${b.team}","${b.marketStatus || (b.isRetained ? 'Retained Core' : 'Auction Targetable')}",${b.pressureStrikeRate},${b.baselineStrikeRate},${b.strikeRateDifferential},${b.collapseStrikeRate},${b.pressureBoundaryPercent},${b.battingIRIS},${b.clutchRating}`
     ),
   ].join('\n');
 
   const bowlersCsv = [
-    'Rank,Player,Team,Pressure_Econ,Baseline_Econ,Econ_Delta,Dot_Pct,Extra_Control_Rate,Bowling_IRIS,Clutch_Rating',
+    'Rank,Player,Team,Market_Status,Pressure_Econ,Baseline_Econ,Econ_Delta,Dot_Pct,Extra_Control_Rate,Bowling_IRIS,Clutch_Rating',
     ...topBowlers.map(
       (b) =>
-        `${b.rank},"${b.name}","${b.team}",${b.pressureEconomy},${b.baselineEconomy},${b.economyDifferential},${b.pressureDotPercent},${b.extraControlRate},${b.bowlingIRIS},${b.clutchRating}`
+        `${b.rank},"${b.name}","${b.team}","${b.marketStatus || (b.isRetained ? 'Retained Core' : 'Auction Targetable')}",${b.pressureEconomy},${b.baselineEconomy},${b.economyDifferential},${b.pressureDotPercent},${b.extraControlRate},${b.bowlingIRIS},${b.clutchRating}`
     ),
   ].join('\n');
 

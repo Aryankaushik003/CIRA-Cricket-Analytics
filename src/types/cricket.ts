@@ -148,6 +148,11 @@ export interface BatterClutchStats {
   strikeRateDifferential: number; // pressureSR - baselineSR
   clutchRating: number; // 0 - 100
   
+  // Auction & Retention Status
+  isRetained?: boolean;
+  marketStatus?: 'Retained Core' | 'Auction Targetable';
+  seasonsCount?: number;
+  
   // Radar data points (normalized 0 - 100)
   radarData: {
     metric: string;
@@ -188,6 +193,11 @@ export interface BowlerClutchStats {
   economyDifferential: number; // baselineEcon - pressureEcon (positive is great)
   clutchRating: number; // 0 - 100
   
+  // Auction & Retention Status
+  isRetained?: boolean;
+  marketStatus?: 'Retained Core' | 'Auction Targetable';
+  seasonsCount?: number;
+  
   radarData: {
     metric: string;
     baseline: number;
@@ -222,4 +232,5 @@ export interface AlgorithmConfig {
   anchorCollapseMultiplier: number; // default 1.5
   anchorWindowBalls: number; // default 15
   lostCauseRrrThreshold: number; // default 18.0
+  excludeRetained?: boolean; // default true for auction targets
 }

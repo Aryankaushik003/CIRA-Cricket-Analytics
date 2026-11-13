@@ -19,6 +19,7 @@ export const DEFAULT_CONFIG: AlgorithmConfig = {
   anchorCollapseMultiplier: 1.5,
   anchorWindowBalls: 15,
   lostCauseRrrThreshold: 18.0,
+  excludeRetained: true,
 };
 
 const PAKISTANI_EXCLUDED_PLAYERS = new Set([
@@ -37,11 +38,28 @@ const PAKISTANI_EXCLUDED_PLAYERS = new Set([
   'ghazi ghouri', 'khawaja nafay', 'mohammad imran randhawa', 'razaullah razaullah'
 ]);
 
+export const RETAINED_CORE_STALWARTS = new Set([
+  'jasprit bumrah', 'sunil narine', 'virat kohli', 'rohit sharma', 'suryakumar yadav',
+  'ms dhoni', 'mahendra singh dhoni', 'ruturaj gaikwad', 'ravindra jadeja',
+  'yashasvi jaiswal', 'riyan parag', 'dhruv jurel', 'arshdeep singh', 'axar patel',
+  'kuldeep yadav', 'rajat patidar', 'shivam dube', 'devon conway', 'mukesh choudhary',
+  'prabhsimran singh', 'harpreet brar', 'namboori tilak varma', 'tilak varma', 'naman dhir',
+  'andre russell'
+]);
+
 function isExcludedPakistanPlayer(name: string, team: string): boolean {
   if (team && team.toLowerCase().includes('pakistan')) return true;
   if (PAKISTANI_EXCLUDED_PLAYERS.has(name.toLowerCase())) return true;
   return false;
 }
+
+export function isFranchiseRetainedStalwart(name: string, dynamicRetainedSet?: Set<string>): boolean {
+  const lower = name.toLowerCase().trim();
+  if (dynamicRetainedSet && dynamicRetainedSet.has(lower)) return true;
+  if (RETAINED_CORE_STALWARTS.has(lower)) return true;
+  return false;
+}
+
 
 
 /**
@@ -204,6 +222,43 @@ export function runCIRAEngine(
   // Step 2: Build anchor players dictionary per team & season
   const { teamSeasonAnchors, teamDisplayAnchors } = identifyAnchorPlayers(rawBalls, matchSeasonMap);
   const playerTeamMap = buildPlayerTeamMap(rawBalls, rawMappings, rawPlayingEleven);
+
+  // Multi-Season Franchise Loyalty Check:
+  const iplPlayerSeasons = new Map<string, { teams: Set<string>; seasons: Set<string> }>();
+  for (const m of rawMappings) {
+    if (!m.player_name) continue;
+    const pName = cleanName(m.player_name).toLowerCase();
+    const teamName = cleanName(m.team_name);
+    const comp = rawCompetitions.find((c) => String(c.competition_id) === String(m.competition_id));
+    const compName = comp ? comp.name : String(m.competition_id || '');
+    if (
+      compName.toUpperCase().includes('IPL') ||
+      teamName.includes('Indians') ||
+      teamName.includes('Super Kings') ||
+      teamName.includes('Riders') ||
+      teamName.includes('Royals') ||
+      teamName.includes('Challengers') ||
+      teamName.includes('Capitals') ||
+      teamName.includes('Kings') ||
+      teamName.includes('Titans') ||
+      teamName.includes('Super Giants') ||
+      teamName.includes('Sunrisers')
+    ) {
+      if (!iplPlayerSeasons.has(pName)) {
+        iplPlayerSeasons.set(pName, { teams: new Set(), seasons: new Set() });
+      }
+      const data = iplPlayerSeasons.get(pName)!;
+      data.teams.add(teamName);
+      data.seasons.add(compName || String(comp?.season || 'season'));
+    }
+  }
+
+  const dynamicRetainedSet = new Set<string>();
+  for (const [name, data] of iplPlayerSeasons.entries()) {
+    if (data.teams.size === 1 && data.seasons.size >= 3) {
+      dynamicRetainedSet.add(name);
+    }
+  }
 
   // Step 3: Group deliveries by match and innings to compute dynamic game state
   // Key: `${match_id}_${innings}` -> RawBall[]
@@ -589,10 +644,15 @@ export function runCIRAEngine(
       clutchRating
     );
 
+    const isRetained = isFranchiseRetainedStalwart(name, dynamicRetainedSet);
+    const marketStatus: 'Retained Core' | 'Auction Targetable' = isRetained ? 'Retained Core' : 'Auction Targetable';
+
     allBatters.push({
       rank: 0,
       name,
       team: s.team,
+      isRetained,
+      marketStatus,
       totalRuns: s.totalRuns,
       totalBalls: s.totalBalls,
       baselineStrikeRate: Number(baselineSR.toFixed(1)),
@@ -619,8 +679,13 @@ export function runCIRAEngine(
   }
 
   // Filter top qualified batters
-  const qualifiedBatters = allBatters.filter((b) => b.pressureBalls >= config.minPressureBallsBatter);
-  const candidateBatters = qualifiedBatters.length >= 10 ? qualifiedBatters : allBatters;
+  let qualifiedBatters = allBatters.filter((b) => b.pressureBalls >= config.minPressureBallsBatter);
+  if (config.excludeRetained) {
+    qualifiedBatters = qualifiedBatters.filter((b) => !b.isRetained);
+  }
+  const candidateBatters = qualifiedBatters.length >= 10
+    ? qualifiedBatters
+    : allBatters.filter((b) => !config.excludeRetained || !b.isRetained);
   candidateBatters.sort((a, b) => b.clutchRating - a.clutchRating || b.pressureStrikeRate - a.pressureStrikeRate);
   candidateBatters.forEach((b, idx) => {
     b.rank = idx + 1;
@@ -682,10 +747,15 @@ export function runCIRAEngine(
       clutchRating
     );
 
+    const isRetained = isFranchiseRetainedStalwart(name, dynamicRetainedSet);
+    const marketStatus: 'Retained Core' | 'Auction Targetable' = isRetained ? 'Retained Core' : 'Auction Targetable';
+
     allBowlers.push({
       rank: 0,
       name,
       team: s.team,
+      isRetained,
+      marketStatus,
       totalBalls: s.totalBalls,
       totalRunsConceded: s.totalRunsConceded,
       baselineEconomy: Number(baselineEcon.toFixed(2)),
@@ -711,8 +781,13 @@ export function runCIRAEngine(
   }
 
   // Filter top qualified bowlers
-  const qualifiedBowlers = allBowlers.filter((b) => b.pressureBalls >= config.minPressureBallsBowler);
-  const candidateBowlers = qualifiedBowlers.length >= 10 ? qualifiedBowlers : allBowlers;
+  let qualifiedBowlers = allBowlers.filter((b) => b.pressureBalls >= config.minPressureBallsBowler);
+  if (config.excludeRetained) {
+    qualifiedBowlers = qualifiedBowlers.filter((b) => !b.isRetained);
+  }
+  const candidateBowlers = qualifiedBowlers.length >= 10
+    ? qualifiedBowlers
+    : allBowlers.filter((b) => !config.excludeRetained || !b.isRetained);
   candidateBowlers.sort((a, b) => b.clutchRating - a.clutchRating || a.pressureEconomy - b.pressureEconomy);
   candidateBowlers.forEach((b, idx) => {
     b.rank = idx + 1;

@@ -9,6 +9,8 @@ import {
   Layers,
   Zap,
   Filter,
+  UserCheck,
+  Lock,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -18,6 +20,8 @@ interface HeaderProps {
   setMinYear: (year: number) => void;
   compFilter: 'all' | 'ipl' | 't20i';
   setCompFilter: (comp: 'all' | 'ipl' | 't20i') => void;
+  excludeRetained: boolean;
+  setExcludeRetained: (val: boolean) => void;
   onReset: () => void;
   onOpenExport: () => void;
   onLoadRealData: () => void;
@@ -32,6 +36,8 @@ export const Header: React.FC<HeaderProps> = ({
   setMinYear,
   compFilter,
   setCompFilter,
+  excludeRetained,
+  setExcludeRetained,
   onReset,
   onOpenExport,
   onLoadRealData,
@@ -119,6 +125,24 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               ))}
             </div>
+
+            {/* Auction Retention Filter Toggle Switch */}
+            <button
+              onClick={() => setExcludeRetained(!excludeRetained)}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
+                excludeRetained
+                  ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400 shadow-sm shadow-emerald-500/10'
+                  : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+              }`}
+              title="Toggle Auction Eligibility: When active, filters out franchise-locked stalwarts (Bumrah, Narine, Kohli) to show realistic auction targets"
+            >
+              {excludeRetained ? (
+                <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
+              ) : (
+                <Lock className="w-3.5 h-3.5 text-slate-400" />
+              )}
+              <span>{excludeRetained ? '🎯 Auction Targets Only' : '👥 Include Retained'}</span>
+            </button>
 
             {/* Export Button */}
             {hasData && (
